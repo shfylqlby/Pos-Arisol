@@ -1,0 +1,48 @@
+@import "@fontsource/plus-jakarta-sans/400.css";
+@import "@fontsource/plus-jakarta-sans/500.css";
+@import "@fontsource/plus-jakarta-sans/600.css";
+@import "@fontsource/plus-jakarta-sans/700.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FFFBF5;
+  --surface: #FFFFFF;
+  --ink: #1F1A17;
+  --ink-muted: #6B5E55;
+  --primary: #C2410C;
+  --on-primary: #FFFFFF;
+  --primary-soft: #FFEDD5;
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --border: #E8DED4;
+}
+
+.dark {
+  --bg: #161210;
+  --surface: #201A17;
+  --ink: #F5EFE9;
+  --ink-muted: #B7A99F;
+  --primary: #FB923C;
+  --on-primary: #1F1A17;
+  --primary-soft: #3A2418;
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --danger: #F87171;
+  --border: #3A312B;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100vh;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
