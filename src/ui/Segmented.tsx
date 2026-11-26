@@ -35,9 +35,7 @@ export function Segmented<T extends string>({
             onClick={() => onChange(opt.value)}
             className={[
               "flex-1 rounded-[8px] px-2 py-2.5 text-sm font-semibold transition-colors",
-              active
-                ? "bg-primary text-on-primary"
-                : "text-ink-muted hover:text-ink",
+              active ? "bg-primary text-on-primary" : "text-ink-muted hover:text-ink",
             ].join(" ")}
           >
             {opt.label}

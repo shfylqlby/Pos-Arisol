@@ -16,8 +16,7 @@ const variantClasses: Record<Variant, string> = {
     "bg-primary text-on-primary hover:opacity-90 active:opacity-80 disabled:opacity-40",
   secondary:
     "bg-surface text-ink border border-border hover:bg-primary-soft/40 active:bg-primary-soft/60 disabled:opacity-40",
-  danger:
-    "bg-danger text-white hover:opacity-90 active:opacity-80 disabled:opacity-40",
+  danger: "bg-danger text-white hover:opacity-90 active:opacity-80 disabled:opacity-40",
   ghost: "bg-transparent text-ink hover:bg-primary-soft/40 active:bg-primary-soft/60",
 };
 
@@ -38,7 +37,7 @@ export function Button({
     <button
       className={[
         "inline-flex items-center justify-center gap-2 rounded-btn font-semibold",
-        "transition-all duration-150 select-none",
+        "select-none transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         "disabled:cursor-not-allowed",
         variantClasses[variant],

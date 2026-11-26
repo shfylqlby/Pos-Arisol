@@ -35,3 +35,15 @@ next-env.d.ts
 # serwist
 public/sw*
 public/swe-worker*
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# local env
+/.env
+
+# playwright test build
+/.next-e2e/

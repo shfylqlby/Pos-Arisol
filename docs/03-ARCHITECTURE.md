@@ -2,19 +2,19 @@
 
 ## 1. Keputusan dan alasan
 
-| Keputusan | Pilihan | Alasan | Alternatif yang ditolak |
-|---|---|---|---|
-| Bentuk aplikasi | **Next.js (App Router) dipakai sebagai app client-only + PWA**, di-deploy ke **Vercel** | Keputusan pemilik produk. Offline-first, bisa di-install, satu kode untuk HP dan PC | Vite SPA (lebih sederhana untuk kasus ini, tapi ditolak oleh pemilik produk; lihat bagian 1a) |
-| Build | Next.js (versi stabil terbaru, di-pin) + React + TS strict, **`output: 'export'`** (static export) | Semua halaman jadi HTML/JS statis yang bisa di-precache service worker; Vercel melayani statis dengan baik | SSR/Server Components untuk data: dilarang (lihat 1a) |
-| Styling | Tailwind CSS | Cepat, token konsisten | Library UI berat |
-| Data lokal | **IndexedDB via Dexie** | Query reaktif (`useLiveQuery`), transaksi, migrasi | localStorage (terlalu kecil), SQLite WASM (lebih berat, OPFS belum merata di iOS) |
-| Cloud | **Supabase** (Auth + Postgres + RLS) | Gratis untuk skala kecil, auth siap pakai, SQL | Firebase (model data kurang cocok untuk laporan relasional) |
-| Sync | Outbox + pull inkremental buatan sendiri | Skala 1 pengguna, aturan sederhana, mudah dites | CRDT/PowerSync/ElectricSQL (berlebihan untuk MVP) |
-| Routing | Next.js App Router (file-based, `next/link`, `useRouter`) | Bawaan framework | React Router (tidak dipakai, jangan dipasang) |
-| Validasi | Zod | Satu skema untuk form, impor, dan data sync | - |
-| Test | Vitest (unit), Playwright (e2e, termasuk offline) | - | - |
-| PWA | **Serwist** (`@serwist/next`, atau paket Turbopack-nya jika versi Next yang dipakai memakai Turbopack untuk build). Verifikasi dukungan versi di dokumentasi resmi Serwist sebelum memilih; jika perlu, build dengan `next build --webpack` | Precache seluruh aset dan halaman statis, update dengan prompt | `next-pwa` (tidak dirawat lagi) |
-| Backend | **Supabase** saja (Auth + Postgres + RLS), diakses langsung dari klien lewat `@supabase/supabase-js` | Keputusan pemilik produk. Tidak ada server sendiri | Route Handlers/Server Actions Next.js untuk logika bisnis (lihat 1a) |
+| Keputusan       | Pilihan                                                                                                                                                                                                                                     | Alasan                                                                                                     | Alternatif yang ditolak                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Bentuk aplikasi | **Next.js (App Router) dipakai sebagai app client-only + PWA**, di-deploy ke **Vercel**                                                                                                                                                     | Keputusan pemilik produk. Offline-first, bisa di-install, satu kode untuk HP dan PC                        | Vite SPA (lebih sederhana untuk kasus ini, tapi ditolak oleh pemilik produk; lihat bagian 1a) |
+| Build           | Next.js (versi stabil terbaru, di-pin) + React + TS strict, **`output: 'export'`** (static export)                                                                                                                                          | Semua halaman jadi HTML/JS statis yang bisa di-precache service worker; Vercel melayani statis dengan baik | SSR/Server Components untuk data: dilarang (lihat 1a)                                         |
+| Styling         | Tailwind CSS                                                                                                                                                                                                                                | Cepat, token konsisten                                                                                     | Library UI berat                                                                              |
+| Data lokal      | **IndexedDB via Dexie**                                                                                                                                                                                                                     | Query reaktif (`useLiveQuery`), transaksi, migrasi                                                         | localStorage (terlalu kecil), SQLite WASM (lebih berat, OPFS belum merata di iOS)             |
+| Cloud           | **Supabase** (Auth + Postgres + RLS)                                                                                                                                                                                                        | Gratis untuk skala kecil, auth siap pakai, SQL                                                             | Firebase (model data kurang cocok untuk laporan relasional)                                   |
+| Sync            | Outbox + pull inkremental buatan sendiri                                                                                                                                                                                                    | Skala 1 pengguna, aturan sederhana, mudah dites                                                            | CRDT/PowerSync/ElectricSQL (berlebihan untuk MVP)                                             |
+| Routing         | Next.js App Router (file-based, `next/link`, `useRouter`)                                                                                                                                                                                   | Bawaan framework                                                                                           | React Router (tidak dipakai, jangan dipasang)                                                 |
+| Validasi        | Zod                                                                                                                                                                                                                                         | Satu skema untuk form, impor, dan data sync                                                                | -                                                                                             |
+| Test            | Vitest (unit), Playwright (e2e, termasuk offline)                                                                                                                                                                                           | -                                                                                                          | -                                                                                             |
+| PWA             | **Serwist** (`@serwist/next`, atau paket Turbopack-nya jika versi Next yang dipakai memakai Turbopack untuk build). Verifikasi dukungan versi di dokumentasi resmi Serwist sebelum memilih; jika perlu, build dengan `next build --webpack` | Precache seluruh aset dan halaman statis, update dengan prompt                                             | `next-pwa` (tidak dirawat lagi)                                                               |
+| Backend         | **Supabase** saja (Auth + Postgres + RLS), diakses langsung dari klien lewat `@supabase/supabase-js`                                                                                                                                        | Keputusan pemilik produk. Tidak ada server sendiri                                                         | Route Handlers/Server Actions Next.js untuk logika bisnis (lihat 1a)                          |
 
 ### 1a. Aturan khusus Next.js untuk app offline-first
 
@@ -39,9 +39,13 @@ pos-risol/
 ├─ public/               # ikon PWA, manifest assets
 ├─ src/
 │  ├─ app/               # Next.js App Router: layout.tsx, page.tsx per rute (tipis, hanya merakit features/*)
-│  │  ├─ layout.tsx      # root layout, font, <Providers>, <AppShell>
-│  │  ├─ page.tsx        # Kasir (rute "/")
-│  │  ├─ stok/  pesanan/  laporan/  lainnya/   # rute per tab (semua 'use client')
+│  │  ├─ layout.tsx      # root layout, font, metadata PWA (tanpa shell)
+│  │  ├─ page.tsx        # Beranda Arisol (publik, info + pre-order)
+│  │  ├─ POS/page.tsx    # Info produk POS (publik, CTA ke /masuk)
+│  │  ├─ masuk/page.tsx  # Login (email+sandi, Google, magic link)
+│  │  └─ (app)/          # Rute dashboard, dibungkus Providers + AuthGate + AppShell
+│  │     ├─ layout.tsx   # Providers, AuthGate, AppShell
+│  │     ├─ kasir/ stok/ pesanan/ laporan/ lainnya/   # rute per tab
 │  │  ├─ sw.ts           # service worker (Serwist)
 │  │  └─ manifest.ts     # web app manifest
 │  ├─ shell/             # AppShell, TabBar, Sidebar, Header, guards
@@ -103,12 +107,12 @@ Sync engine (latar belakang)
 
 Karena 1 pemilik dan data transaksi bersifat tambah-saja, konflik jarang dan sederhana:
 
-| Jenis data | Tabel | Strategi |
-|---|---|---|
-| Append-only | `sales`, `sale_items`, `sale_voids`, `stock_movements`, `consignment_drops`(+items) | Tidak pernah ada konflik. ID klien unik. `on conflict do nothing`. |
-| Master mutable | `products`, `partners`, `partner_prices`, `settings` | **Last-write-wins** per baris berdasarkan `updated_at`. Server menolak tulis yang `updated_at`-nya lebih lama dari yang tersimpan. |
-| Dokumen mutable | `preorders`(+items), `consignment_settlements`(+items) | LWW per baris; item anak diganti utuh bersama induk (kirim induk + anak dalam satu payload). |
-| Hapus | semua master | Soft delete: `deleted_at`. Baris dengan `deleted_at` tidak tampil, tetap disinkron. |
+| Jenis data      | Tabel                                                                               | Strategi                                                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Append-only     | `sales`, `sale_items`, `sale_voids`, `stock_movements`, `consignment_drops`(+items) | Tidak pernah ada konflik. ID klien unik. `on conflict do nothing`.                                                                 |
+| Master mutable  | `products`, `partners`, `partner_prices`, `settings`                                | **Last-write-wins** per baris berdasarkan `updated_at`. Server menolak tulis yang `updated_at`-nya lebih lama dari yang tersimpan. |
+| Dokumen mutable | `preorders`(+items), `consignment_settlements`(+items)                              | LWW per baris; item anak diganti utuh bersama induk (kirim induk + anak dalam satu payload).                                       |
+| Hapus           | semua master                                                                        | Soft delete: `deleted_at`. Baris dengan `deleted_at` tidak tampil, tetap disinkron.                                                |
 
 - **Stok tidak punya konflik** karena dihitung dari ledger. Dua perangkat yang menjual produk sama saat offline akan menghasilkan stok negatif sementara; itu diterima dan ditampilkan apa adanya (peringatan, bukan error).
 - **Nomor struk:** format `{kodePerangkat}-{urut 4 digit}` per hari bisnis, mis. `A-0012`. Kode perangkat (A, B, …) dipilih saat pertama setup di Pengaturan. Tidak ada tabrakan antar perangkat.
@@ -139,13 +143,13 @@ Karena 1 pemilik dan data transaksi bersifat tambah-saja, konflik jarang dan sed
 
 ## 8. Strategi test
 
-| Level | Cakupan wajib |
-|---|---|
-| Unit (Vitest) | `money`, `cart` (paket, diskon, pembulatan), `stock` (ledger, void, waste), `reports` (omzet/modal/untung dengan snapshot harga modal), `consignment` (tagihan, sisa), nomor struk |
-| Integrasi | Repository + Dexie (fake-indexeddb): tulis sale → movements + outbox terbentuk dalam satu transaksi |
-| Sync | Mock Supabase: push idempoten, retry, LWW, pull inkremental, initial upload |
-| E2E (Playwright) | (1) jual tunai offline, (2) void mengembalikan stok, (3) tutup hari, (4) pre-order sampai selesai, (5) setoran titip jual, (6) offline → online, outbox terkirim |
-| Aksesibilitas | `axe` pada layar utama |
+| Level            | Cakupan wajib                                                                                                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit (Vitest)    | `money`, `cart` (paket, diskon, pembulatan), `stock` (ledger, void, waste), `reports` (omzet/modal/untung dengan snapshot harga modal), `consignment` (tagihan, sisa), nomor struk |
+| Integrasi        | Repository + Dexie (fake-indexeddb): tulis sale → movements + outbox terbentuk dalam satu transaksi                                                                                |
+| Sync             | Mock Supabase: push idempoten, retry, LWW, pull inkremental, initial upload                                                                                                        |
+| E2E (Playwright) | (1) jual tunai offline, (2) void mengembalikan stok, (3) tutup hari, (4) pre-order sampai selesai, (5) setoran titip jual, (6) offline → online, outbox terkirim                   |
+| Aksesibilitas    | `axe` pada layar utama                                                                                                                                                             |
 
 ## 9. Observabilitas
 

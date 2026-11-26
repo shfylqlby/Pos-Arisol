@@ -143,19 +143,19 @@ Info usaha (struk), gambar QRIS, zona waktu, PIN, auto-kembali kasir, tema (tera
 
 **Warna** (semua pasangan teks/latar sudah AA):
 
-| Token | Terang | Gelap | Pakai untuk |
-|---|---|---|---|
-| `--bg` | `#FFFBF5` | `#161210` | Latar halaman |
-| `--surface` | `#FFFFFF` | `#201A17` | Kartu |
-| `--ink` | `#1F1A17` | `#F5EFE9` | Teks utama |
-| `--ink-muted` | `#6B5E55` | `#B7A99F` | Teks sekunder |
-| `--primary` | `#C2410C` | `#FB923C` | Tombol utama, aksen |
-| `--on-primary` | `#FFFFFF` | `#1F1A17` | Teks di atas primary |
-| `--primary-soft` | `#FFEDD5` | `#3A2418` | Chip, badge qty |
-| `--success` | `#15803D` | `#4ADE80` | Kembalian, aman |
-| `--warning` | `#B45309` | `#FBBF24` | Hampir habis |
-| `--danger` | `#B91C1C` | `#F87171` | Habis, void, hapus |
-| `--border` | `#E8DED4` | `#3A312B` | Garis |
+| Token            | Terang    | Gelap     | Pakai untuk          |
+| ---------------- | --------- | --------- | -------------------- |
+| `--bg`           | `#FFFBF5` | `#161210` | Latar halaman        |
+| `--surface`      | `#FFFFFF` | `#201A17` | Kartu                |
+| `--ink`          | `#1F1A17` | `#F5EFE9` | Teks utama           |
+| `--ink-muted`    | `#6B5E55` | `#B7A99F` | Teks sekunder        |
+| `--primary`      | `#C2410C` | `#FB923C` | Tombol utama, aksen  |
+| `--on-primary`   | `#FFFFFF` | `#1F1A17` | Teks di atas primary |
+| `--primary-soft` | `#FFEDD5` | `#3A2418` | Chip, badge qty      |
+| `--success`      | `#15803D` | `#4ADE80` | Kembalian, aman      |
+| `--warning`      | `#B45309` | `#FBBF24` | Hampir habis         |
+| `--danger`       | `#B91C1C` | `#F87171` | Habis, void, hapus   |
+| `--border`       | `#E8DED4` | `#3A312B` | Garis                |
 
 **Tipografi:** `Plus Jakarta Sans` (self-host lewat `@fontsource` supaya jalan offline), fallback `system-ui`. Skala: 12 / 14 / 16 (dasar) / 20 / 24 / 32 / 40. Angka uang: `font-variant-numeric: tabular-nums`, bobot 700.
 
@@ -168,6 +168,7 @@ Info usaha (struk), gambar QRIS, zona waktu, PIN, auto-kembali kasir, tema (tera
 ## 6. Status offline dan sync
 
 Chip di header:
+
 - `● Tersimpan` (hijau): semua sudah tersinkron atau belum login (mode lokal, tulis "Tersimpan di HP ini").
 - `↻ Menyinkron… (n)` (netral): ada n item di outbox dan online.
 - `○ Offline · n belum terkirim` (kuning): offline dengan antrean.

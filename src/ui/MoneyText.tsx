@@ -20,7 +20,7 @@ const sizeMap = {
 export function MoneyText({ amount, className = "", size = "md" }: MoneyTextProps) {
   return (
     <span
-      className={`tabular-nums font-bold ${sizeMap[size]} ${className}`}
+      className={`font-bold tabular-nums ${sizeMap[size]} ${className}`}
       style={{ fontVariantNumeric: "tabular-nums" }}
     >
       {formatRupiah(amount)}

@@ -121,6 +121,10 @@ export async function listMovements(
       .sortBy("created_at");
     return list.slice(0, limit);
   }
-  const all = await db.stock_movements.orderBy("created_at").reverse().limit(limit).toArray();
+  const all = await db.stock_movements
+    .orderBy("created_at")
+    .reverse()
+    .limit(limit)
+    .toArray();
   return all;
 }

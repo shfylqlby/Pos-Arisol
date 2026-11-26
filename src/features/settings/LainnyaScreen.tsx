@@ -1,33 +1,123 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Package, Settings, DatabaseBackup, Info, ChevronRight, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  Package,
+  Settings,
+  DatabaseBackup,
+  Info,
+  ChevronRight,
+  Lock,
+  LogOut,
+  Cloud,
+  BookOpen,
+  FileWarning,
+  UtensilsCrossed,
+} from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
+import { isCloudConfigured, signOut } from "@/data/auth";
 import { getSettings } from "@/data/repositories/settings";
 import { TextInput } from "@/ui/Field";
 import { Button } from "@/ui/Button";
 import { hashPin } from "./SettingsScreen";
 
-const items = [
-  { href: "/lainnya/produk", label: "Produk", icon: Package, desc: "Menu, harga, modal" },
-  { href: "/lainnya/pengaturan", label: "Pengaturan", icon: Settings, desc: "Usaha, QRIS, tema, akun" },
-  { href: "/lainnya/backup", label: "Backup", icon: DatabaseBackup, desc: "Ekspor & impor data" },
-  { href: "/lainnya/tentang", label: "Tentang", icon: Info, desc: "Versi aplikasi" },
+const groups = [
+  {
+    title: "Toko",
+    items: [
+      {
+        href: "/lainnya/produk",
+        label: "Produk",
+        icon: Package,
+        desc: "Menu jual, harga, modal, dan paket",
+      },
+      {
+        href: "/lainnya/menu",
+        label: "Menu publik",
+        icon: UtensilsCrossed,
+        desc: "Foto, harga, dan stok di halaman Arisol",
+      },
+    ],
+  },
+  {
+    title: "Operasional",
+    items: [
+      {
+        href: "/lainnya/pengaturan",
+        label: "Pengaturan",
+        icon: Settings,
+        desc: "Profil usaha, QRIS, tema, PIN",
+      },
+      {
+        href: "/lainnya/backup",
+        label: "Backup",
+        icon: DatabaseBackup,
+        desc: "Ekspor & impor data perangkat",
+      },
+      {
+        href: "/lainnya/sinkronisasi",
+        label: "Sinkronisasi",
+        icon: Cloud,
+        desc: "Akun cloud & antrean data",
+      },
+    ],
+  },
+  {
+    title: "Bantuan",
+    items: [
+      {
+        href: "/lainnya/panduan",
+        label: "Panduan",
+        icon: BookOpen,
+        desc: "Cara pakai singkat",
+      },
+      {
+        href: "/lainnya/log",
+        label: "Log",
+        icon: FileWarning,
+        desc: "Catatan error perangkat",
+      },
+      {
+        href: "/lainnya/tentang",
+        label: "Tentang",
+        icon: Info,
+        desc: "Versi aplikasi",
+      },
+    ],
+  },
 ];
 
 const UNLOCK_KEY = "pos-unlocked";
 
 export function LainnyaScreen() {
+  const router = useRouter();
   const settings = useLiveQuery(() => getSettings(), [], undefined);
+  const configured = isCloudConfigured();
   const [unlocked, setUnlocked] = useState(
     () => typeof window !== "undefined" && sessionStorage.getItem(UNLOCK_KEY) === "1"
   );
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const logout = async () => {
+    if (!window.confirm("Keluar dari akun ini?")) return;
+    setLoggingOut(true);
+    try {
+      await signOut();
+      sessionStorage.removeItem(UNLOCK_KEY);
+      router.replace("/masuk");
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   if (!settings) {
-    return <div className="mx-auto max-w-2xl px-4 py-6 text-sm text-ink-muted">Memuat…</div>;
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-6 text-sm text-ink-muted">Memuat...</div>
+    );
   }
 
   if (settings.pin_hash && !unlocked) {
@@ -64,6 +154,16 @@ export function LainnyaScreen() {
         >
           Buka
         </Button>
+        {configured && (
+          <button
+            type="button"
+            onClick={() => void logout()}
+            disabled={loggingOut}
+            className="min-h-[44px] text-xs font-semibold text-ink-muted hover:text-danger disabled:opacity-50"
+          >
+            {loggingOut ? "Keluar..." : "Keluar akun"}
+          </button>
+        )}
       </div>
     );
   }
@@ -71,25 +171,45 @@ export function LainnyaScreen() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4">
       <h1 className="mb-3 text-lg font-extrabold">Lainnya</h1>
-      <ul className="flex flex-col divide-y divide-border rounded-card border border-border bg-surface">
-        {items.map((it) => {
-          const Icon = it.icon;
-          return (
-            <li key={it.href}>
-              <Link href={it.href} className="flex items-center gap-3 px-4 py-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-soft text-primary">
-                  <Icon size={20} />
-                </span>
-                <span className="flex-1">
-                  <span className="block text-sm font-semibold">{it.label}</span>
-                  <span className="block text-xs text-ink-muted">{it.desc}</span>
-                </span>
-                <ChevronRight size={18} className="text-ink-muted" />
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+
+      {groups.map((group) => (
+        <section key={group.title} className="mb-4">
+          <h2 className="mb-1.5 px-1 text-[11px] font-extrabold uppercase tracking-wide text-ink-muted">
+            {group.title}
+          </h2>
+          <ul className="flex flex-col divide-y divide-border rounded-card border border-border bg-surface">
+            {group.items.map((it) => {
+              const Icon = it.icon;
+              return (
+                <li key={it.href}>
+                  <Link href={it.href} className="flex items-center gap-3 px-4 py-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-soft text-primary">
+                      <Icon size={20} />
+                    </span>
+                    <span className="flex-1">
+                      <span className="block text-sm font-semibold">{it.label}</span>
+                      <span className="block text-xs text-ink-muted">{it.desc}</span>
+                    </span>
+                    <ChevronRight size={18} className="text-ink-muted" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+
+      {configured && (
+        <Button
+          variant="secondary"
+          fullWidth
+          onClick={() => void logout()}
+          disabled={loggingOut}
+          className="text-danger"
+        >
+          <LogOut size={18} /> {loggingOut ? "Keluar..." : "Keluar akun"}
+        </Button>
+      )}
     </div>
   );
 }

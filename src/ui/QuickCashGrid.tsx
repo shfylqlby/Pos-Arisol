@@ -26,14 +26,14 @@ export function QuickCashGrid({ totalDue, onSelect, onManual }: QuickCashGridPro
           <button
             key={amount}
             onClick={() => onSelect(amount)}
-            className="min-h-[48px] rounded-btn border border-border bg-surface text-sm font-bold tabular-nums text-ink active:bg-primary-soft/60"
+            className="active:bg-primary-soft/60 min-h-[48px] rounded-btn border border-border bg-surface text-sm font-bold tabular-nums text-ink"
           >
             {formatRupiah(amount)}
           </button>
         ))}
         <button
           onClick={onManual}
-          className="min-h-[48px] rounded-btn border border-border bg-surface text-sm font-semibold text-ink-muted active:bg-primary-soft/60"
+          className="active:bg-primary-soft/60 min-h-[48px] rounded-btn border border-border bg-surface text-sm font-semibold text-ink-muted"
         >
           Lainnya…
         </button>

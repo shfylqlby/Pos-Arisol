@@ -68,11 +68,11 @@ export function PaymentScreen({ onBack, onSuccess }: PaymentScreenProps) {
   );
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-bg">
+    <div className="fixed inset-0 z-50 flex flex-col bg-bg">
       <div className="flex h-14 items-center gap-2 border-b border-border px-2">
         <button
           onClick={onBack}
-          className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-primary-soft/50"
+          className="hover:bg-primary-soft/50 flex h-11 w-11 items-center justify-center rounded-full"
           aria-label="Kembali"
         >
           <ArrowLeft size={22} />
@@ -84,7 +84,7 @@ export function PaymentScreen({ onBack, onSuccess }: PaymentScreenProps) {
         <div className="mx-auto w-full max-w-md">
           <div className="mb-4 text-center">
             <div className="text-xs font-medium text-ink-muted">Total</div>
-            <div className="tabular-nums text-4xl font-extrabold text-ink">
+            <div className="text-4xl font-extrabold tabular-nums text-ink">
               {formatRupiah(totalDue)}
             </div>
           </div>
@@ -112,13 +112,13 @@ export function PaymentScreen({ onBack, onSuccess }: PaymentScreenProps) {
               />
               <div className="mt-2 flex justify-between rounded-card border border-border bg-surface p-3">
                 <span className="text-sm text-ink-muted">Diterima</span>
-                <span className="tabular-nums text-base font-bold">
+                <span className="text-base font-bold tabular-nums">
                   {formatRupiah(paid)}
                 </span>
               </div>
-              <div className="flex justify-between rounded-card border border-success/30 bg-success/5 p-3">
+              <div className="border-success/30 bg-success/5 flex justify-between rounded-card border p-3">
                 <span className="text-sm font-semibold text-success">Kembalian</span>
-                <span className="tabular-nums text-xl font-extrabold text-success">
+                <span className="text-xl font-extrabold tabular-nums text-success">
                   {formatRupiah(change)}
                 </span>
               </div>

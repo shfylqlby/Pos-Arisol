@@ -30,10 +30,7 @@ export async function generateNextReceiptNo(
   businessDate: string,
   deviceLabel: string
 ): Promise<string> {
-  const salesToday = await db.sales
-    .where("business_date")
-    .equals(businessDate)
-    .toArray();
+  const salesToday = await db.sales.where("business_date").equals(businessDate).toArray();
 
   const prefix = `${deviceLabel}-`;
   const matching = salesToday.filter((s) => s.receipt_no.startsWith(prefix));
@@ -52,10 +49,7 @@ export async function createSale(params: CreateSaleParams): Promise<{
   const saleId = createId();
 
   const totals = calculateCartTotals(params.cart);
-  const receiptNo = await generateNextReceiptNo(
-    businessDate,
-    settings.device_label
-  );
+  const receiptNo = await generateNextReceiptNo(businessDate, settings.device_label);
 
   const sale: Sale = {
     id: saleId,
@@ -175,29 +169,25 @@ export async function voidSale(
     created_at: now,
   }));
 
-  await db.transaction(
-    "rw",
-    [db.sale_voids, db.stock_movements, db.outbox],
-    async () => {
-      await db.sale_voids.add(saleVoid);
-      await recordOutbox(
-        "sale_voids",
-        saleVoid.id,
-        "insert",
-        saleVoid as unknown as Record<string, unknown>
-      );
+  await db.transaction("rw", [db.sale_voids, db.stock_movements, db.outbox], async () => {
+    await db.sale_voids.add(saleVoid);
+    await recordOutbox(
+      "sale_voids",
+      saleVoid.id,
+      "insert",
+      saleVoid as unknown as Record<string, unknown>
+    );
 
-      for (const sm of reversalMovements) {
-        await db.stock_movements.add(sm);
-        await recordOutbox(
-          "stock_movements",
-          sm.id,
-          "insert",
-          sm as unknown as Record<string, unknown>
-        );
-      }
+    for (const sm of reversalMovements) {
+      await db.stock_movements.add(sm);
+      await recordOutbox(
+        "stock_movements",
+        sm.id,
+        "insert",
+        sm as unknown as Record<string, unknown>
+      );
     }
-  );
+  });
 
   return saleVoid;
 }
@@ -217,25 +207,20 @@ export async function getSaleWithDetails(saleId: string): Promise<{
 }
 
 export async function getDayOmzet(businessDate: string): Promise<number> {
-  const sales = await db.sales
-    .where("business_date")
-    .equals(businessDate)
-    .toArray();
-  const voidIds = new Set(
-    (await db.sale_voids.toArray()).map((v) => v.sale_id)
-  );
-  return sales
-    .filter((s) => !voidIds.has(s.id))
-    .reduce((acc, s) => acc + s.total, 0);
+  const sales = await db.sales.where("business_date").equals(businessDate).toArray();
+  const voidIds = new Set((await db.sale_voids.toArray()).map((v) => v.sale_id));
+  return sales.filter((s) => !voidIds.has(s.id)).reduce((acc, s) => acc + s.total, 0);
 }
 
 export async function listSales(
   businessDate?: string,
   limit: number = 100
-): Promise<{
-  sale: Sale;
-  isVoid: boolean;
-}[]> {
+): Promise<
+  {
+    sale: Sale;
+    isVoid: boolean;
+  }[]
+> {
   let sales: Sale[];
   if (businessDate) {
     sales = await db.sales
@@ -247,9 +232,7 @@ export async function listSales(
     sales = await db.sales.orderBy("created_at").reverse().limit(limit).toArray();
   }
 
-  const voidIds = new Set(
-    (await db.sale_voids.toArray()).map((v) => v.sale_id)
-  );
+  const voidIds = new Set((await db.sale_voids.toArray()).map((v) => v.sale_id));
 
   return sales.map((sale) => ({
     sale,

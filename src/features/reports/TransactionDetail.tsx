@@ -1,11 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Ban } from "lucide-react";
+import { Ban, Printer, Image as ImageIcon } from "lucide-react";
+import { useLiveQuery } from "dexie-react-hooks";
 import type { Sale, SaleItem, VoidReason } from "@/data/schemas";
 import { formatRupiah } from "@/domain/money";
 import { formatDateTime } from "@/lib/date";
 import { voidSale } from "@/data/repositories/sales";
+import { getSettings } from "@/data/repositories/settings";
+import {
+  printHtml,
+  receiptHtml,
+  shareReceiptPng,
+  type ReceiptPrintOptions,
+} from "@/lib/share";
 import { Modal } from "@/ui/Modal";
 import { Button } from "@/ui/Button";
 import { Chip } from "@/ui/Chip";
@@ -24,11 +32,46 @@ const reasons: { value: VoidReason; label: string }[] = [
   { value: "lainnya", label: "Lainnya" },
 ];
 
-export function TransactionDetail({ sale, items, isVoid, onClose }: TransactionDetailProps) {
+export function TransactionDetail({
+  sale,
+  items,
+  isVoid,
+  onClose,
+}: TransactionDetailProps) {
   const { show } = useToast();
+  const settings = useLiveQuery(() => getSettings(), [], undefined);
   const [voidOpen, setVoidOpen] = useState(false);
   const [reason, setReason] = useState<VoidReason>("salah_input");
   const [saving, setSaving] = useState(false);
+
+  const buildReceiptOptions = (): ReceiptPrintOptions | null => {
+    if (!settings) return null;
+    return {
+      businessName: settings.business_name,
+      address: settings.address,
+      phone: settings.phone,
+      receiptNo: sale.receipt_no,
+      dateText: formatDateTime(sale.created_at, settings.timezone),
+      items: items.map((i) => ({
+        name: i.product_name,
+        qty: i.qty,
+        unitPrice: formatRupiah(i.unit_price),
+        lineTotal: formatRupiah(i.qty * i.unit_price),
+      })),
+      subtotal: formatRupiah(sale.subtotal),
+      discount: sale.discount > 0 ? formatRupiah(sale.discount) : undefined,
+      total: formatRupiah(sale.total),
+      paid: formatRupiah(sale.paid_amount),
+      change: formatRupiah(sale.change_amount),
+      paymentLabel:
+        sale.payment_method === "cash"
+          ? "Tunai"
+          : sale.payment_method === "qris"
+            ? "QRIS"
+            : "Transfer",
+      footer: settings.receipt_footer,
+    };
+  };
 
   const doVoid = async () => {
     setSaving(true);
@@ -49,8 +92,8 @@ export function TransactionDetail({ sale, items, isVoid, onClose }: TransactionD
     sale.payment_method === "cash"
       ? "Tunai"
       : sale.payment_method === "qris"
-      ? "QRIS"
-      : "Transfer";
+        ? "QRIS"
+        : "Transfer";
 
   return (
     <>
@@ -74,7 +117,7 @@ export function TransactionDetail({ sale, items, isVoid, onClose }: TransactionD
             ))}
           </ul>
 
-          <div className="rounded-card bg-primary-soft/50 p-3 text-sm">
+          <div className="bg-primary-soft/50 rounded-card p-3 text-sm">
             <div className="flex justify-between">
               <span className="text-ink-muted">Subtotal</span>
               <span className="tabular-nums">{formatRupiah(sale.subtotal)}</span>
@@ -97,6 +140,27 @@ export function TransactionDetail({ sale, items, isVoid, onClose }: TransactionD
               <span className="text-ink-muted">Kembalian</span>
               <span className="tabular-nums">{formatRupiah(sale.change_amount)}</span>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                const opts = buildReceiptOptions();
+                if (opts) printHtml(receiptHtml(opts));
+              }}
+            >
+              <Printer size={18} /> Cetak
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={async () => {
+                const opts = buildReceiptOptions();
+                if (opts) await shareReceiptPng(opts, `struk-${sale.receipt_no}.png`);
+              }}
+            >
+              <ImageIcon size={18} /> Gambar
+            </Button>
           </div>
 
           {!isVoid && (

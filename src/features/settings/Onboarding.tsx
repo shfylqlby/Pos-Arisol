@@ -44,7 +44,8 @@ export function Onboarding({ onDone }: OnboardingProps) {
           </div>
           <h1 className="text-2xl font-extrabold">Selamat datang!</h1>
           <p className="text-sm text-ink-muted">
-            Yuk siapkan lapakmu dalam 1 menit. Semua data tersimpan di HP ini dan tetap jalan tanpa internet.
+            Yuk siapkan lapakmu dalam 1 menit. Semua data tersimpan di HP ini dan tetap
+            jalan tanpa internet.
           </p>
           <Field label="Nama usaha">
             <TextInput
@@ -64,7 +65,8 @@ export function Onboarding({ onDone }: OnboardingProps) {
         <div className="flex flex-col gap-4">
           <h1 className="text-xl font-extrabold">3 menu awal disiapkan</h1>
           <p className="text-sm text-ink-muted">
-            Kami tambahkan Risol Mayo, Risol Ragout, dan Risol Sayur. Harga dan modal bisa kamu ubah nanti di menu Produk.
+            Kami tambahkan Risol Mayo, Risol Ragout, dan Risol Sayur. Harga dan modal bisa
+            kamu ubah nanti di menu Produk.
           </p>
           <div className="rounded-card border border-border bg-surface p-4 text-sm">
             <ul className="flex flex-col gap-1">
@@ -87,7 +89,8 @@ export function Onboarding({ onDone }: OnboardingProps) {
           <h1 className="text-xl font-extrabold">Pasang di layar utama</h1>
           <p className="text-sm text-ink-muted">
             Supaya cepat dibuka dan tidak kehilangan data: buka menu browser lalu pilih
-            &quot;Tambah ke Layar Utama&quot; (Android: Install app; iPhone: Share → Add to Home Screen).
+            &quot;Tambah ke Layar Utama&quot; (Android: Install app; iPhone: Share → Add
+            to Home Screen).
           </p>
           <Button size="lg" fullWidth disabled={saving} onClick={finish}>
             {saving ? "Menyiapkan…" : "Mulai jualan"}

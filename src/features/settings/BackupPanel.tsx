@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useRef, useState } from "react";
 import { Download, Upload, AlertTriangle } from "lucide-react";
@@ -8,6 +8,7 @@ import {
   type BackupFile,
 } from "@/data/repositories/backup";
 import { Button } from "@/ui/Button";
+import { BackLink } from "@/ui/BackLink";
 import { ConfirmDialog } from "@/ui/ConfirmDialog";
 import { useToast } from "@/ui/Toast";
 
@@ -75,16 +76,22 @@ export function BackupPanel() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4">
+      <BackLink />
       <h1 className="mb-4 text-lg font-extrabold">Backup</h1>
 
       <div className="flex flex-col gap-4">
         <section className="rounded-card border border-border bg-surface p-4">
           <h2 className="text-sm font-bold">Ekspor data</h2>
           <p className="mt-1 text-xs text-ink-muted">
-            Simpan seluruh data (produk, transaksi, stok, pesanan, titip jual) ke
-            satu file JSON. Simpan file di tempat aman.
+            Simpan seluruh data (produk, transaksi, stok, pesanan, titip jual) ke satu
+            file JSON. Simpan file di tempat aman.
           </p>
-          <Button className="mt-3" variant="secondary" disabled={busy} onClick={exportJson}>
+          <Button
+            className="mt-3"
+            variant="secondary"
+            disabled={busy}
+            onClick={exportJson}
+          >
             <Download size={18} /> Unduh backup
           </Button>
         </section>

@@ -14,7 +14,10 @@ import { Modal } from "@/ui/Modal";
 import { PreorderForm } from "./PreorderForm";
 import { PreorderDetail } from "./PreorderDetail";
 
-const statusMeta: Record<PreorderStatus, { label: string; tone: "default" | "success" | "warning" | "danger" | "primary" }> = {
+const statusMeta: Record<
+  PreorderStatus,
+  { label: string; tone: "default" | "success" | "warning" | "danger" | "primary" }
+> = {
   new: { label: "Baru", tone: "primary" },
   in_production: { label: "Diproduksi", tone: "warning" },
   ready: { label: "Siap", tone: "success" },
@@ -25,7 +28,10 @@ const statusMeta: Record<PreorderStatus, { label: string; tone: "default" | "suc
 export function PreorderList() {
   const preorders = useLiveQuery(() => listPreorders(), [], undefined);
   const [formOpen, setFormOpen] = useState(false);
-  const [selected, setSelected] = useState<{ preorder: Preorder; items: PreorderItem[] } | null>(null);
+  const [selected, setSelected] = useState<{
+    preorder: Preorder;
+    items: PreorderItem[];
+  } | null>(null);
 
   const grouped = useMemo(() => {
     if (!preorders) return null;
@@ -59,7 +65,10 @@ export function PreorderList() {
 
   const needs = useMemo(() => {
     if (!preorders) return [];
-    const byDate: Record<string, { label: string; ts: number; items: Record<string, number> }> = {};
+    const byDate: Record<
+      string,
+      { label: string; ts: number; items: Record<string, number> }
+    > = {};
     for (const entry of preorders) {
       const p = entry.preorder;
       if (p.status === "done" || p.status === "cancelled") continue;
@@ -85,7 +94,7 @@ export function PreorderList() {
   }, [preorders]);
 
   if (preorders === undefined) {
-    return <div className="h-40 animate-pulse rounded-card bg-border/40" />;
+    return <div className="bg-border/40 h-40 animate-pulse rounded-card" />;
   }
 
   return (
@@ -141,7 +150,9 @@ export function PreorderList() {
                     className="flex flex-col gap-1 rounded-card border border-border bg-surface p-3 text-left"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold">{entry.preorder.customer_name}</span>
+                      <span className="text-sm font-bold">
+                        {entry.preorder.customer_name}
+                      </span>
                       <Chip tone={meta.tone}>{meta.label}</Chip>
                     </div>
                     <div className="text-xs text-ink-muted">
@@ -151,7 +162,7 @@ export function PreorderList() {
                       {entry.items.map((i) => `${i.product_name} x${i.qty}`).join(", ")}
                     </div>
                     <div className="mt-1 flex items-center justify-between text-sm">
-                      <span className="tabular-nums font-semibold">
+                      <span className="font-semibold tabular-nums">
                         {formatRupiah(entry.preorder.total)}
                       </span>
                       {remaining > 0 && entry.preorder.status !== "done" && (
@@ -169,9 +180,7 @@ export function PreorderList() {
       )}
 
       <Modal open={formOpen} onClose={() => setFormOpen(false)} title="Pesanan baru">
-        <PreorderForm
-          onDone={() => setFormOpen(false)}
-        />
+        <PreorderForm onDone={() => setFormOpen(false)} />
       </Modal>
 
       {selected && (

@@ -59,29 +59,25 @@ export async function createPreorder(
     deleted_at: null,
   };
 
-  await db.transaction(
-    "rw",
-    [db.preorders, db.preorder_items, db.outbox],
-    async () => {
-      await db.preorders.add(preorder);
-      await recordOutbox(
-        "preorders",
-        preorder.id,
-        "insert",
-        preorder as unknown as Record<string, unknown>
-      );
+  await db.transaction("rw", [db.preorders, db.preorder_items, db.outbox], async () => {
+    await db.preorders.add(preorder);
+    await recordOutbox(
+      "preorders",
+      preorder.id,
+      "insert",
+      preorder as unknown as Record<string, unknown>
+    );
 
-      for (const it of items) {
-        await db.preorder_items.add(it);
-        await recordOutbox(
-          "preorder_items",
-          it.id,
-          "insert",
-          it as unknown as Record<string, unknown>
-        );
-      }
+    for (const it of items) {
+      await db.preorder_items.add(it);
+      await recordOutbox(
+        "preorder_items",
+        it.id,
+        "insert",
+        it as unknown as Record<string, unknown>
+      );
     }
-  );
+  });
 
   return { preorder, items };
 }
@@ -125,10 +121,7 @@ export async function completePreorder(
     return { preorder, saleId: preorder.sale_id };
   }
 
-  const preorderItems = await db.preorder_items
-    .where("preorder_id")
-    .equals(id)
-    .toArray();
+  const preorderItems = await db.preorder_items.where("preorder_id").equals(id).toArray();
 
   // Build cart items for sale creation
   const cartItems = [];
@@ -182,10 +175,12 @@ export async function completePreorder(
   return { preorder: updatedPreorder, saleId: sale.id };
 }
 
-export async function listPreorders(): Promise<{
-  preorder: Preorder;
-  items: PreorderItem[];
-}[]> {
+export async function listPreorders(): Promise<
+  {
+    preorder: Preorder;
+    items: PreorderItem[];
+  }[]
+> {
   const list = await db.preorders
     .filter((p) => p.deleted_at === null)
     .reverse()

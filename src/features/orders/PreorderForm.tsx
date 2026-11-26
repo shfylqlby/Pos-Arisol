@@ -130,7 +130,7 @@ export function PreorderForm({ onDone }: PreorderFormProps) {
         <TextArea value={note} onChange={(e) => setNote(e.target.value)} />
       </Field>
 
-      <div className="rounded-card bg-primary-soft/50 p-3">
+      <div className="bg-primary-soft/50 rounded-card p-3">
         <div className="flex justify-between text-base font-bold">
           <span>Total</span>
           <span className="tabular-nums">{formatRupiah(total)}</span>
@@ -138,7 +138,9 @@ export function PreorderForm({ onDone }: PreorderFormProps) {
         {deposit > 0 && (
           <div className="mt-1 flex justify-between text-sm text-ink-muted">
             <span>Sisa bayar</span>
-            <span className="tabular-nums">{formatRupiah(Math.max(0, total - deposit))}</span>
+            <span className="tabular-nums">
+              {formatRupiah(Math.max(0, total - deposit))}
+            </span>
           </div>
         )}
       </div>

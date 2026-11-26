@@ -1,10 +1,16 @@
-"use client";
+﻿"use client";
 
 import React, { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { PackagePlus, Moon, History, Boxes } from "lucide-react";
 import { listProducts } from "@/data/repositories/products";
-import { getAllProductsStock, listMovements, listMovementsByDate, recordProduction, recordStockMovement } from "@/data/repositories/stock";
+import {
+  getAllProductsStock,
+  listMovements,
+  listMovementsByDate,
+  recordProduction,
+  recordStockMovement,
+} from "@/data/repositories/stock";
 import { getDayOmzet } from "@/data/repositories/sales";
 import type { Product } from "@/data/schemas";
 import { getBusinessDate, formatDateTime } from "@/lib/date";
@@ -36,8 +42,16 @@ export function StokScreen() {
   const settings = useLiveQuery(() => getSettings(), [], undefined);
   const businessDate = getBusinessDate(new Date(), settings?.timezone || "Asia/Jakarta");
 
-  const products = useLiveQuery(() => listProducts(true), [], undefined as Product[] | undefined);
-  const stockMap = useLiveQuery(() => getAllProductsStock(), [], {} as Record<string, number>);
+  const products = useLiveQuery(
+    () => listProducts(true),
+    [],
+    undefined as Product[] | undefined
+  );
+  const stockMap = useLiveQuery(
+    () => getAllProductsStock(),
+    [],
+    {} as Record<string, number>
+  );
   const todayMovements = useLiveQuery(
     () => listMovementsByDate(businessDate),
     [businessDate],
@@ -73,9 +87,13 @@ export function StokScreen() {
     return map;
   }, [products, todayMovements, businessDate, stockMap]);
 
-  const totalOmzetToday = useLiveQuery(async () => {
-    return getDayOmzet(businessDate);
-  }, [businessDate], 0);
+  const totalOmzetToday = useLiveQuery(
+    async () => {
+      return getDayOmzet(businessDate);
+    },
+    [businessDate],
+    0
+  );
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-4">
@@ -84,7 +102,7 @@ export function StokScreen() {
         <Segmented
           options={[
             { value: "today", label: "Hari ini" },
-            { value: "production", label: "Produksi" },
+            { value: "production", label: "Tambah stok" },
             { value: "history", label: "Riwayat" },
           ]}
           value={tab}
@@ -99,6 +117,7 @@ export function StokScreen() {
           summaries={summaries}
           omzet={totalOmzetToday}
           onCloseDay={() => setWizardOpen(true)}
+          onAddStock={() => setTab("production")}
         />
       )}
 
@@ -129,14 +148,16 @@ function TodayTab({
   summaries,
   omzet,
   onCloseDay,
+  onAddStock,
 }: {
   products: Product[] | undefined;
   summaries: Record<string, ReturnType<typeof calculateStockSummary>>;
   omzet: number;
   onCloseDay: () => void;
+  onAddStock: () => void;
 }) {
   if (products === undefined) {
-    return <div className="h-40 animate-pulse rounded-card bg-border/40" />;
+    return <div className="bg-border/40 h-40 animate-pulse rounded-card" />;
   }
   const tracked = products.filter((p) => p.track_stock);
   if (tracked.length === 0) {
@@ -166,12 +187,12 @@ function TodayTab({
             status.status === "out_of_stock"
               ? "border-l-danger"
               : status.status === "low_stock"
-              ? "border-l-warning"
-              : "border-l-success";
+                ? "border-l-warning"
+                : "border-l-success";
           return (
             <li
               key={p.id}
-              className={`flex items-center justify-between rounded-card border border-border border-l-4 bg-surface p-3 ${border}`}
+              className={`flex items-center justify-between rounded-card border border-l-4 border-border bg-surface p-3 ${border}`}
             >
               <div>
                 <div className="text-sm font-semibold">{p.name}</div>
@@ -181,7 +202,9 @@ function TodayTab({
                 </div>
               </div>
               <div className="text-right">
-                <div className="tabular-nums text-2xl font-extrabold">{s.currentStock}</div>
+                <div className="text-2xl font-extrabold tabular-nums">
+                  {s.currentStock}
+                </div>
                 <div className="text-[10px] text-ink-muted">pcs</div>
               </div>
             </li>
@@ -189,14 +212,27 @@ function TodayTab({
         })}
       </ul>
 
-      <Button size="lg" fullWidth onClick={onCloseDay} className="mt-2">
+      <p className="text-xs text-ink-muted">
+        Stok berkurang otomatis setiap ada penjualan. Tambah hasil produksi harian di
+        tab Tambah stok.
+      </p>
+      <Button variant="secondary" size="lg" fullWidth onClick={onAddStock}>
+        <PackagePlus size={18} /> Tambah stok hari ini
+      </Button>
+      <Button size="lg" fullWidth onClick={onCloseDay}>
         <Moon size={18} /> Tutup hari
       </Button>
     </div>
   );
 }
 
-function ProductionTab({ products, businessDate }: { products: Product[] | undefined; businessDate: string }) {
+function ProductionTab({
+  products,
+  businessDate,
+}: {
+  products: Product[] | undefined;
+  businessDate: string;
+}) {
   const { show } = useToast();
   const [productId, setProductId] = useState("");
   const [qty, setQty] = useState(0);
@@ -205,7 +241,9 @@ function ProductionTab({ products, businessDate }: { products: Product[] | undef
   const todayProduction = useLiveQuery(
     async () => {
       const moves = await listMovementsByDate(businessDate);
-      return moves.filter((m) => m.type === "production").sort((a, b) => b.created_at.localeCompare(a.created_at));
+      return moves
+        .filter((m) => m.type === "production")
+        .sort((a, b) => b.created_at.localeCompare(a.created_at));
     },
     [businessDate],
     []
@@ -233,7 +271,7 @@ function ProductionTab({ products, businessDate }: { products: Product[] | undef
     <div className="flex flex-col gap-4">
       <div className="rounded-card border border-border bg-surface p-4">
         <h2 className="mb-3 flex items-center gap-2 text-sm font-bold">
-          <PackagePlus size={18} /> Catat produksi
+          <PackagePlus size={18} /> Catat produksi / tambah stok
         </h2>
         <div className="flex flex-col gap-3">
           <select
@@ -256,7 +294,7 @@ function ProductionTab({ products, businessDate }: { products: Product[] | undef
               value={qty || ""}
               onChange={(e) => setQty(Number(e.target.value))}
               placeholder="Jumlah"
-              className="tabular-nums min-h-[48px] w-24 rounded-btn border border-border bg-surface px-3 text-base"
+              className="min-h-[48px] w-24 rounded-btn border border-border bg-surface px-3 text-base tabular-nums"
             />
             {[5, 10, 20].map((n) => (
               <button
@@ -270,7 +308,7 @@ function ProductionTab({ products, businessDate }: { products: Product[] | undef
           </div>
 
           <Button fullWidth disabled={!selected || qty <= 0 || saving} onClick={save}>
-            {saving ? "Menyimpan…" : "Simpan produksi"}
+            {saving ? "Menyimpan…" : "Simpan stok"}
           </Button>
         </div>
       </div>
@@ -278,7 +316,10 @@ function ProductionTab({ products, businessDate }: { products: Product[] | undef
       <div>
         <h3 className="mb-2 text-sm font-bold">Produksi hari ini</h3>
         {todayProduction.length === 0 ? (
-          <EmptyState title="Belum ada produksi" description="Catat produksi pertamamu hari ini." />
+          <EmptyState
+            title="Belum ada produksi"
+            description="Catat produksi pertamamu hari ini."
+          />
         ) : (
           <ul className="flex flex-col gap-2">
             {todayProduction.map((m) => {
@@ -290,7 +331,9 @@ function ProductionTab({ products, businessDate }: { products: Product[] | undef
                 >
                   <div>
                     <div className="text-sm font-semibold">{p?.name || m.product_id}</div>
-                    <div className="text-xs text-ink-muted">{formatDateTime(m.created_at)}</div>
+                    <div className="text-xs text-ink-muted">
+                      {formatDateTime(m.created_at)}
+                    </div>
                   </div>
                   <Chip tone="success">+{m.qty} pcs</Chip>
                 </li>
@@ -360,7 +403,7 @@ function HistoryTab({ products }: { products: Product[] | undefined }) {
                   </div>
                 </div>
                 <span
-                  className={`tabular-nums text-sm font-bold ${
+                  className={`text-sm font-bold tabular-nums ${
                     m.qty >= 0 ? "text-success" : "text-danger"
                   }`}
                 >

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -6,6 +6,7 @@ import { Moon, Sun, Monitor, Lock, Unlock, ImagePlus } from "lucide-react";
 import { getSettings, updateSettings } from "@/data/repositories/settings";
 import { Field, TextInput, NumberInput, TextArea } from "@/ui/Field";
 import { Button } from "@/ui/Button";
+import { BackLink } from "@/ui/BackLink";
 import { Segmented } from "@/ui/Segmented";
 import { Modal } from "@/ui/Modal";
 import { useToast } from "@/ui/Toast";
@@ -113,26 +114,46 @@ export function SettingsScreen() {
   };
 
   if (!settings) {
-    return <div className="mx-auto max-w-2xl px-4 py-6 text-sm text-ink-muted">Memuat…</div>;
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-6 text-sm text-ink-muted">Memuat…</div>
+    );
   }
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4">
+      <BackLink />
       <h1 className="mb-4 text-lg font-extrabold">Pengaturan</h1>
 
       <section className="mb-5 flex flex-col gap-3 rounded-card border border-border bg-surface p-4">
         <h2 className="text-sm font-bold">Profil usaha</h2>
         <Field label="Nama usaha" htmlFor="s-name">
-          <TextInput id="s-name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+          <TextInput
+            id="s-name"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
+          />
         </Field>
         <Field label="Alamat" htmlFor="s-addr">
-          <TextArea id="s-addr" value={address} onChange={(e) => setAddress(e.target.value)} />
+          <TextArea
+            id="s-addr"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
         </Field>
         <Field label="Telepon / WhatsApp" htmlFor="s-phone">
-          <TextInput id="s-phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" />
+          <TextInput
+            id="s-phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            inputMode="tel"
+          />
         </Field>
         <Field label="Teks bawah struk" htmlFor="s-footer">
-          <TextInput id="s-footer" value={footer} onChange={(e) => setFooter(e.target.value)} />
+          <TextInput
+            id="s-footer"
+            value={footer}
+            onChange={(e) => setFooter(e.target.value)}
+          />
         </Field>
         <div className="grid grid-cols-2 gap-2">
           <Field label="Label perangkat" htmlFor="s-device" hint="Contoh: A, B">
@@ -144,7 +165,11 @@ export function SettingsScreen() {
             />
           </Field>
           <Field label="Zona waktu" htmlFor="s-tz">
-            <TextInput id="s-tz" value={timezone} onChange={(e) => setTimezone(e.target.value)} />
+            <TextInput
+              id="s-tz"
+              value={timezone}
+              onChange={(e) => setTimezone(e.target.value)}
+            />
           </Field>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -175,7 +200,11 @@ export function SettingsScreen() {
         {qrisImage ? (
           <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={qrisImage} alt="QRIS" className="h-28 w-28 rounded-btn border border-border object-contain" />
+            <img
+              src={qrisImage}
+              alt="QRIS"
+              className="h-28 w-28 rounded-btn border border-border object-contain"
+            />
             <Button variant="secondary" onClick={() => setQrisImage(null)}>
               Hapus
             </Button>

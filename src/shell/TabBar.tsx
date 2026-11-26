@@ -3,16 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  ShoppingCart,
-  Boxes,
-  ClipboardList,
-  BarChart3,
-  Menu,
-} from "lucide-react";
+import { ShoppingCart, Boxes, ClipboardList, BarChart3, Menu } from "lucide-react";
 
 const tabs = [
-  { href: "/", label: "Kasir", icon: ShoppingCart },
+  { href: "/kasir", label: "Kasir", icon: ShoppingCart },
   { href: "/stok", label: "Stok", icon: Boxes },
   { href: "/pesanan", label: "Pesanan", icon: ClipboardList },
   { href: "/laporan", label: "Laporan", icon: BarChart3 },
@@ -29,8 +23,7 @@ export function TabBar() {
     >
       <div className="mx-auto flex max-w-lg items-stretch">
         {tabs.map((tab) => {
-          const active =
-            tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+          const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
           const Icon = tab.icon;
           return (
             <Link

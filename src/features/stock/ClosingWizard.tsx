@@ -83,7 +83,7 @@ export function ClosingWizard({
       <div className="flex h-14 items-center gap-2 border-b border-border px-2">
         <button
           onClick={() => (step === 1 ? onClose() : setStep(1))}
-          className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-primary-soft/50"
+          className="hover:bg-primary-soft/50 flex h-11 w-11 items-center justify-center rounded-full"
           aria-label="Kembali"
         >
           <ArrowLeft size={22} />
@@ -109,7 +109,9 @@ export function ClosingWizard({
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold">{p.name}</span>
-                      <span className="text-xs text-ink-muted">Sistem: {systemStock}</span>
+                      <span className="text-xs text-ink-muted">
+                        Sistem: {systemStock}
+                      </span>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
                       <input
@@ -122,12 +124,16 @@ export function ClosingWizard({
                             [p.id]: Math.max(0, Number(e.target.value)),
                           }))
                         }
-                        className="tabular-nums min-h-[44px] w-24 rounded-btn border border-border bg-surface px-3 text-base"
+                        className="min-h-[44px] w-24 rounded-btn border border-border bg-surface px-3 text-base tabular-nums"
                       />
                       <span className="text-xs text-ink-muted">pcs sisa</span>
                       <span
-                        className={`tabular-nums ml-auto text-sm font-bold ${
-                          diff < 0 ? "text-danger" : diff > 0 ? "text-warning" : "text-success"
+                        className={`ml-auto text-sm font-bold tabular-nums ${
+                          diff < 0
+                            ? "text-danger"
+                            : diff > 0
+                              ? "text-warning"
+                              : "text-success"
                         }`}
                       >
                         {diff > 0 ? "+" : ""}
@@ -146,13 +152,13 @@ export function ClosingWizard({
                 <h3 className="mb-2 text-sm font-bold">Ringkasan selisih</h3>
                 <div className="flex justify-between text-sm">
                   <span className="text-ink-muted">Nilai waste (kurang)</span>
-                  <span className="tabular-nums font-bold text-danger">
+                  <span className="font-bold tabular-nums text-danger">
                     {formatRupiah(totalWaste)}
                   </span>
                 </div>
                 <div className="mt-1 flex justify-between text-sm">
                   <span className="text-ink-muted">Nilai koreksi (lebih)</span>
-                  <span className="tabular-nums font-bold text-warning">
+                  <span className="font-bold tabular-nums text-warning">
                     {formatRupiah(totalAdjust)}
                   </span>
                 </div>
@@ -179,7 +185,7 @@ export function ClosingWizard({
               </div>
 
               {largeDifference && (
-                <div className="rounded-btn border border-warning/40 bg-warning/10 p-3 text-xs text-warning">
+                <div className="border-warning/40 bg-warning/10 rounded-btn border p-3 text-xs text-warning">
                   Selisihnya cukup banyak pada sebagian produk. Yakin angkanya benar?
                 </div>
               )}
@@ -190,10 +196,13 @@ export function ClosingWizard({
                   .map((i) => {
                     const p = products.find((x) => x.id === i.productId);
                     return (
-                      <li key={i.productId} className="flex justify-between px-3 py-2 text-sm">
+                      <li
+                        key={i.productId}
+                        className="flex justify-between px-3 py-2 text-sm"
+                      >
                         <span>{p?.name}</span>
                         <span
-                          className={`tabular-nums font-bold ${
+                          className={`font-bold tabular-nums ${
                             i.difference < 0 ? "text-danger" : "text-warning"
                           }`}
                         >

@@ -24,8 +24,16 @@ import { useWakeLock } from "@/lib/useWakeLock";
 type View = "pos" | "pay" | "success";
 
 export function KasirScreen() {
-  const products = useLiveQuery(() => listProducts(false), [], undefined as Product[] | undefined);
-  const stockMap = useLiveQuery(() => getAllProductsStock(), [], {} as Record<string, number>);
+  const products = useLiveQuery(
+    () => listProducts(false),
+    [],
+    undefined as Product[] | undefined
+  );
+  const stockMap = useLiveQuery(
+    () => getAllProductsStock(),
+    [],
+    {} as Record<string, number>
+  );
   const settings = useLiveQuery(() => getSettings(), [], undefined);
 
   const { items, discount, add, setQty, remove } = useCartStore();
@@ -35,7 +43,9 @@ export function KasirScreen() {
   const [query, setQuery] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
   const [view, setView] = useState<View>("pos");
-  const [lastSale, setLastSale] = useState<{ sale: Sale; items: SaleItem[] } | null>(null);
+  const [lastSale, setLastSale] = useState<{ sale: Sale; items: SaleItem[] } | null>(
+    null
+  );
   const [warnedProducts, setWarnedProducts] = useState<Set<string>>(new Set());
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   useWakeLock(view === "pos");
@@ -69,7 +79,7 @@ export function KasirScreen() {
     items.find((i) => i.product.id === productId)?.qty ?? 0;
 
   const handleAdd = (product: Product) => {
-    const stock = product.track_stock ? stockMap[product.id] ?? 0 : 999;
+    const stock = product.track_stock ? (stockMap[product.id] ?? 0) : 999;
     if (product.track_stock && stock <= 0 && !warnedProducts.has(product.id)) {
       setWarnedProducts((prev) => new Set(prev).add(product.id));
       show(`Stok ${product.name} 0. Tetap dijual?`, { tone: "warning" });
@@ -103,12 +113,7 @@ export function KasirScreen() {
   }
 
   if (view === "pay") {
-    return (
-      <PaymentScreen
-        onBack={() => setView("pos")}
-        onSuccess={handleSuccess}
-      />
-    );
+    return <PaymentScreen onBack={() => setView("pos")} onSuccess={handleSuccess} />;
   }
 
   if (view === "success" && lastSale) {
@@ -163,7 +168,7 @@ export function KasirScreen() {
         {products === undefined ? (
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-24 animate-pulse rounded-card bg-border/40" />
+              <div key={i} className="bg-border/40 h-24 animate-pulse rounded-card" />
             ))}
           </div>
         ) : products.length === 0 ? (
@@ -210,7 +215,9 @@ export function KasirScreen() {
               <li key={item.product.id} className="rounded-btn border border-border p-2">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold">{item.product.name}</div>
+                    <div className="truncate text-sm font-semibold">
+                      {item.product.name}
+                    </div>
                     <div className="text-xs text-ink-muted">
                       {formatRupiah(item.unitPrice)}
                     </div>
@@ -223,8 +230,11 @@ export function KasirScreen() {
                   </button>
                 </div>
                 <div className="mt-2 flex items-center justify-between">
-                  <Stepper value={item.qty} onChange={(v) => setQty(item.product.id, v)} />
-                  <span className="tabular-nums text-sm font-bold">
+                  <Stepper
+                    value={item.qty}
+                    onChange={(v) => setQty(item.product.id, v)}
+                  />
+                  <span className="text-sm font-bold tabular-nums">
                     {formatRupiah(item.qty * item.unitPrice)}
                   </span>
                 </div>
@@ -252,6 +262,7 @@ export function KasirScreen() {
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] lg:min-h-0">
+      <h1 className="sr-only">Kasir</h1>
       <div className="flex min-w-0 flex-1 flex-col">{ProductGrid}</div>
       {DesktopCart}
 
@@ -267,7 +278,7 @@ export function KasirScreen() {
               <span className="flex-1 text-sm font-semibold">
                 {totals.totalItems} item
               </span>
-              <span className="tabular-nums text-sm font-bold">
+              <span className="text-sm font-bold tabular-nums">
                 {formatRupiah(totals.total)}
               </span>
             </button>

@@ -20,7 +20,7 @@ export function StatCard({ label, value, hint, tone = "default" }: StatCardProps
   return (
     <div className="rounded-card border border-border bg-surface p-3">
       <div className="text-xs font-medium text-ink-muted">{label}</div>
-      <div className={`tabular-nums mt-1 text-xl font-bold ${toneMap[tone]}`}>
+      <div className={`mt-1 text-xl font-bold tabular-nums ${toneMap[tone]}`}>
         {value}
       </div>
       {hint && <div className="mt-0.5 text-xs text-ink-muted">{hint}</div>}

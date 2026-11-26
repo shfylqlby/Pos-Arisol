@@ -2,7 +2,12 @@
 
 import React, { useState } from "react";
 import { MessageCircle, CheckCircle2, Factory, PackageCheck } from "lucide-react";
-import type { Preorder, PreorderItem, PreorderStatus, PaymentMethod } from "@/data/schemas";
+import type {
+  Preorder,
+  PreorderItem,
+  PreorderStatus,
+  PaymentMethod,
+} from "@/data/schemas";
 import { formatRupiah } from "@/domain/money";
 import { formatDateTime } from "@/lib/date";
 import { updatePreorderStatus, completePreorder } from "@/data/repositories/preorders";
@@ -39,7 +44,9 @@ export function PreorderDetail({ preorder, items, onClose }: PreorderDetailProps
   const sendWa = () => {
     const text = `Halo ${preorder.customer_name}, pesanan Anda (${items
       .map((i) => `${i.product_name} x${i.qty}`)
-      .join(", ")}) dijadwalkan ${formatDateTime(preorder.pickup_at)}. Total ${formatRupiah(
+      .join(
+        ", "
+      )}) dijadwalkan ${formatDateTime(preorder.pickup_at)}. Total ${formatRupiah(
       preorder.total
     )}. Terima kasih!`;
     const phone = preorder.phone.replace(/[^0-9]/g, "").replace(/^0/, "62");
@@ -63,7 +70,10 @@ export function PreorderDetail({ preorder, items, onClose }: PreorderDetailProps
   const finish = async () => {
     setSaving(true);
     try {
-      const paid = method === "cash" ? Number(paidText.replace(/[^0-9]/g, "")) || remaining : remaining;
+      const paid =
+        method === "cash"
+          ? Number(paidText.replace(/[^0-9]/g, "")) || remaining
+          : remaining;
       const change = method === "cash" ? Math.max(0, paid - remaining) : 0;
       await completePreorder(preorder.id, method, paid, change);
       show("Pesanan selesai & tercatat", { tone: "success" });
@@ -98,7 +108,9 @@ export function PreorderDetail({ preorder, items, onClose }: PreorderDetailProps
             </div>
             <div className="mt-1 flex justify-between">
               <span className="text-ink-muted">Total</span>
-              <span className="tabular-nums font-bold">{formatRupiah(preorder.total)}</span>
+              <span className="font-bold tabular-nums">
+                {formatRupiah(preorder.total)}
+              </span>
             </div>
             <div className="mt-1 flex justify-between">
               <span className="text-ink-muted">DP</span>
@@ -106,7 +118,7 @@ export function PreorderDetail({ preorder, items, onClose }: PreorderDetailProps
             </div>
             <div className="mt-1 flex justify-between">
               <span className="text-ink-muted">Sisa bayar</span>
-              <span className="tabular-nums font-bold text-warning">
+              <span className="font-bold tabular-nums text-warning">
                 {formatRupiah(remaining)}
               </span>
             </div>

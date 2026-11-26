@@ -64,8 +64,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 t.tone === "success"
                   ? "text-success"
                   : t.tone === "warning"
-                  ? "text-warning"
-                  : "text-primary"
+                    ? "text-warning"
+                    : "text-primary"
               }
             >
               {t.tone === "success" ? (

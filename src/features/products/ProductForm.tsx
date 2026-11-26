@@ -59,9 +59,7 @@ export function ProductForm({ product, allProducts, onDone }: ProductFormProps) 
         cost_price: costPrice,
         track_stock: kind === "bundle" ? false : trackStock,
         low_stock_threshold:
-          kind === "bundle" || threshold === ""
-            ? null
-            : Number(threshold),
+          kind === "bundle" || threshold === "" ? null : Number(threshold),
         sort_order: product?.sort_order ?? allProducts.length,
         is_active: isActive,
         photo: product?.photo ?? null,
@@ -158,9 +156,11 @@ export function ProductForm({ product, allProducts, onDone }: ProductFormProps) 
         </Field>
       </div>
 
-      <div className="rounded-btn bg-primary-soft/40 px-3 py-2 text-sm">
+      <div className="bg-primary-soft/40 rounded-btn px-3 py-2 text-sm">
         Margin:{" "}
-        <span className={`tabular-nums font-bold ${margin >= 0 ? "text-success" : "text-danger"}`}>
+        <span
+          className={`font-bold tabular-nums ${margin >= 0 ? "text-success" : "text-danger"}`}
+        >
           {formatRupiah(margin)}
         </span>
       </div>
@@ -177,7 +177,11 @@ export function ProductForm({ product, allProducts, onDone }: ProductFormProps) 
             Lacak stok produk ini
           </label>
           {trackStock && (
-            <Field label="Batas stok menipis" htmlFor="p-thr" hint="Kosongkan untuk default pengaturan">
+            <Field
+              label="Batas stok menipis"
+              htmlFor="p-thr"
+              hint="Kosongkan untuk default pengaturan"
+            >
               <NumberInput
                 id="p-thr"
                 min={0}

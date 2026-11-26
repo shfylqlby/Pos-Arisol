@@ -21,12 +21,30 @@ describe("Domain Stock", () => {
   it("calculates today summary accurately", () => {
     const today = "2026-11-25";
     const movements = [
-      { product_id: "p1", qty: 40, type: "production", unit_cost: 1800, business_date: today },
+      {
+        product_id: "p1",
+        qty: 40,
+        type: "production",
+        unit_cost: 1800,
+        business_date: today,
+      },
       { product_id: "p1", qty: -15, type: "sale", unit_cost: 1800, business_date: today },
-      { product_id: "p1", qty: 5, type: "sale_void", unit_cost: 1800, business_date: today },
+      {
+        product_id: "p1",
+        qty: 5,
+        type: "sale_void",
+        unit_cost: 1800,
+        business_date: today,
+      },
       { product_id: "p1", qty: -2, type: "waste", unit_cost: 1800, business_date: today },
       // yesterday
-      { product_id: "p1", qty: 20, type: "production", unit_cost: 1800, business_date: "2026-11-24" },
+      {
+        product_id: "p1",
+        qty: 20,
+        type: "production",
+        unit_cost: 1800,
+        business_date: "2026-11-24",
+      },
     ];
 
     const summary = calculateStockSummary(movements, today);

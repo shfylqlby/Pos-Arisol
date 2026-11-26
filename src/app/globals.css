@@ -8,37 +8,37 @@
 @tailwind utilities;
 
 :root {
-  --bg: #FFFBF5;
-  --surface: #FFFFFF;
-  --ink: #1F1A17;
-  --ink-muted: #6B5E55;
-  --primary: #C2410C;
-  --on-primary: #FFFFFF;
-  --primary-soft: #FFEDD5;
-  --success: #15803D;
-  --warning: #B45309;
-  --danger: #B91C1C;
-  --border: #E8DED4;
+  --bg: #fffbf5;
+  --surface: #ffffff;
+  --ink: #1f1a17;
+  --ink-muted: #6b5e55;
+  --primary: #c2410c;
+  --on-primary: #ffffff;
+  --primary-soft: #ffedd5;
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --border: #e8ded4;
 }
 
 .dark {
   --bg: #161210;
-  --surface: #201A17;
-  --ink: #F5EFE9;
-  --ink-muted: #B7A99F;
-  --primary: #FB923C;
-  --on-primary: #1F1A17;
-  --primary-soft: #3A2418;
-  --success: #4ADE80;
-  --warning: #FBBF24;
-  --danger: #F87171;
-  --border: #3A312B;
+  --surface: #201a17;
+  --ink: #f5efe9;
+  --ink-muted: #b7a99f;
+  --primary: #fb923c;
+  --on-primary: #1f1a17;
+  --primary-soft: #3a2418;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --border: #3a312b;
 }
 
 body {
   background-color: var(--bg);
   color: var(--ink);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   min-height: 100vh;
 }

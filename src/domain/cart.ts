@@ -28,9 +28,7 @@ export function addToCart(
       ? product.base_product_id
       : product.id;
 
-  const existingIndex = cart.items.findIndex(
-    (item) => item.product.id === product.id
-  );
+  const existingIndex = cart.items.findIndex((item) => item.product.id === product.id);
 
   let updatedItems: CartItem[];
 
@@ -115,10 +113,7 @@ export function calculateCartTotals(cart: CartState): {
   total: number;
   totalItems: number;
 } {
-  const subtotal = cart.items.reduce(
-    (acc, item) => acc + item.qty * item.unitPrice,
-    0
-  );
+  const subtotal = cart.items.reduce((acc, item) => acc + item.qty * item.unitPrice, 0);
   const total = Math.max(0, subtotal - cart.discount);
   const totalItems = cart.items.reduce((acc, item) => acc + item.qty, 0);
 

@@ -1,5 +1,6 @@
 import { pushOutboxBatch } from "./push";
 import { pullAll } from "./pull";
+import { enqueueInitialUpload } from "./initial";
 import { getSupabaseClient } from "./supabase";
 
 export type SyncPhase = "idle" | "syncing" | "error" | "offline" | "local";
@@ -80,10 +81,18 @@ export async function runSync(): Promise<void> {
   emit({ phase: "syncing" });
 
   try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData.session?.user;
+    if (user) {
+      await enqueueInitialUpload(user.id);
+    }
     await pushOutboxBatch();
-    await pullAll();
     const { db } = await import("../db");
-    const pending = await db.outbox.where("status").equals("pending").count();
+    const stillPending = await db.outbox.where("status").equals("pending").count();
+    if (stillPending === 0) {
+      await pullAll();
+    }
+    const pending = stillPending;
     emit({
       phase: pending > 0 ? "syncing" : "idle",
       pending,

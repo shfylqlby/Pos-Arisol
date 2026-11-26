@@ -51,7 +51,11 @@ export function LaporanScreen() {
   const [period, setPeriod] = useState<Period>("today");
   const [customStart, setCustomStart] = useState(getBusinessDate());
   const [customEnd, setCustomEnd] = useState(getBusinessDate());
-  const [selectedSale, setSelectedSale] = useState<{ sale: Sale; items: SaleItem[]; isVoid: boolean } | null>(null);
+  const [selectedSale, setSelectedSale] = useState<{
+    sale: Sale;
+    items: SaleItem[];
+    isVoid: boolean;
+  } | null>(null);
 
   const range = dateRange(period, tz, customStart, customEnd);
 
@@ -173,7 +177,7 @@ export function LaporanScreen() {
       )}
 
       {!report ? (
-        <div className="h-40 animate-pulse rounded-card bg-border/40" />
+        <div className="bg-border/40 h-40 animate-pulse rounded-card" />
       ) : (
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
@@ -185,7 +189,10 @@ export function LaporanScreen() {
               tone={report.summary.untung >= 0 ? "success" : "danger"}
             />
             <StatCard label="Transaksi" value={report.summary.transactionCount} />
-            <StatCard label="Rata-rata" value={formatRupiah(report.summary.averagePerTransaction)} />
+            <StatCard
+              label="Rata-rata"
+              value={formatRupiah(report.summary.averagePerTransaction)}
+            />
             <StatCard
               label="Waste"
               value={formatRupiah(report.summary.wasteCost)}
@@ -198,7 +205,7 @@ export function LaporanScreen() {
               <span className="text-ink-muted">
                 Titip jual lunas ({consignment?.count ?? 0} setoran)
               </span>
-              <span className="tabular-nums font-semibold">
+              <span className="font-semibold tabular-nums">
                 {formatRupiah(consignment?.total ?? 0)}
               </span>
             </div>
@@ -217,7 +224,7 @@ export function LaporanScreen() {
                 {dailySeries.map((d) => (
                   <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
                     <div
-                      className="w-full rounded-t bg-primary/80"
+                      className="bg-primary/80 w-full rounded-t"
                       style={{ height: `${Math.max(2, (d.total / maxDaily) * 100)}%` }}
                       title={formatRupiah(d.total)}
                     />
@@ -237,10 +244,14 @@ export function LaporanScreen() {
                 <ul className="flex flex-col gap-1.5">
                   {report.bestSellers.slice(0, 5).map((b, idx) => (
                     <li key={b.productId} className="flex items-center gap-2 text-sm">
-                      <span className="w-4 text-xs font-bold text-ink-muted">{idx + 1}</span>
+                      <span className="w-4 text-xs font-bold text-ink-muted">
+                        {idx + 1}
+                      </span>
                       <span className="min-w-0 flex-1 truncate">{b.productName}</span>
-                      <span className="tabular-nums text-xs text-ink-muted">{b.qty} pcs</span>
-                      <span className="tabular-nums text-xs font-semibold">
+                      <span className="text-xs tabular-nums text-ink-muted">
+                        {b.qty} pcs
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums">
                         {formatRupiah(b.totalOmzet)}
                       </span>
                     </li>
@@ -254,15 +265,21 @@ export function LaporanScreen() {
               <ul className="flex flex-col gap-1.5 text-sm">
                 <li className="flex justify-between">
                   <span className="text-ink-muted">Tunai</span>
-                  <span className="tabular-nums">{formatRupiah(report.paymentBreakdown.cash)}</span>
+                  <span className="tabular-nums">
+                    {formatRupiah(report.paymentBreakdown.cash)}
+                  </span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-ink-muted">QRIS</span>
-                  <span className="tabular-nums">{formatRupiah(report.paymentBreakdown.qris)}</span>
+                  <span className="tabular-nums">
+                    {formatRupiah(report.paymentBreakdown.qris)}
+                  </span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-ink-muted">Transfer</span>
-                  <span className="tabular-nums">{formatRupiah(report.paymentBreakdown.transfer)}</span>
+                  <span className="tabular-nums">
+                    {formatRupiah(report.paymentBreakdown.transfer)}
+                  </span>
                 </li>
               </ul>
             </div>
@@ -296,14 +313,16 @@ export function LaporanScreen() {
                         >
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold">{s.receipt_no}</span>
+                              <span className="text-sm font-semibold">
+                                {s.receipt_no}
+                              </span>
                               {isVoid && <Chip tone="danger">Void</Chip>}
                             </div>
                             <div className="text-xs text-ink-muted">
                               {formatDateTime(s.created_at, tz)}
                             </div>
                           </div>
-                          <span className="tabular-nums text-sm font-bold">
+                          <span className="text-sm font-bold tabular-nums">
                             {formatRupiah(s.total)}
                           </span>
                         </button>

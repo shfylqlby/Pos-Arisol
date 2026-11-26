@@ -1,13 +1,18 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Plus, ArrowUp, ArrowDown, Pencil, Trash2 } from "lucide-react";
-import { listProducts, deleteProduct, reorderProducts } from "@/data/repositories/products";
+import {
+  listProducts,
+  deleteProduct,
+  reorderProducts,
+} from "@/data/repositories/products";
 import { getAllProductsStock } from "@/data/repositories/stock";
 import type { Product } from "@/data/schemas";
 import { formatRupiah } from "@/domain/money";
 import { Button } from "@/ui/Button";
+import { BackLink } from "@/ui/BackLink";
 import { Modal } from "@/ui/Modal";
 import { Chip } from "@/ui/Chip";
 import { EmptyState } from "@/ui/EmptyState";
@@ -17,7 +22,11 @@ import { useToast } from "@/ui/Toast";
 
 export function ProductsScreen() {
   const products = useLiveQuery(() => listProducts(true), [], undefined);
-  const stockMap = useLiveQuery(() => getAllProductsStock(), [], {} as Record<string, number>);
+  const stockMap = useLiveQuery(
+    () => getAllProductsStock(),
+    [],
+    {} as Record<string, number>
+  );
   const { show } = useToast();
 
   const [editing, setEditing] = useState<Product | "new" | null>(null);
@@ -35,6 +44,7 @@ export function ProductsScreen() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4">
       <div className="mb-3 flex items-center justify-between">
+      <BackLink />
         <h1 className="text-lg font-extrabold">Produk</h1>
         <Button onClick={() => setEditing("new")}>
           <Plus size={18} /> Tambah
@@ -42,7 +52,7 @@ export function ProductsScreen() {
       </div>
 
       {products === undefined ? (
-        <div className="h-40 animate-pulse rounded-card bg-border/40" />
+        <div className="bg-border/40 h-40 animate-pulse rounded-card" />
       ) : products.length === 0 ? (
         <EmptyState
           title="Belum ada produk"
@@ -83,20 +93,22 @@ export function ProductsScreen() {
                 </div>
                 <div className="text-xs text-ink-muted">
                   {formatRupiah(p.price)} · modal {formatRupiah(p.cost_price)}
-                  {p.track_stock ? ` · stok ${stockMap[p.id] ?? 0}` : " · stok dari produk dasar"}
+                  {p.track_stock
+                    ? ` · stok ${stockMap[p.id] ?? 0}`
+                    : " · stok dari produk dasar"}
                 </div>
               </div>
 
               <button
                 onClick={() => setEditing(p)}
-                className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-primary-soft/50"
+                className="hover:bg-primary-soft/50 flex h-10 w-10 items-center justify-center rounded-full"
                 aria-label="Ubah"
               >
                 <Pencil size={18} />
               </button>
               <button
                 onClick={() => setDeleting(p)}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-danger hover:bg-danger/10"
+                className="hover:bg-danger/10 flex h-10 w-10 items-center justify-center rounded-full text-danger"
                 aria-label="Hapus"
               >
                 <Trash2 size={18} />

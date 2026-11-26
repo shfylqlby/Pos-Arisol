@@ -28,8 +28,8 @@ export function formatWhatsAppReceipt(
     sale.payment_method === "cash"
       ? "Tunai"
       : sale.payment_method === "qris"
-      ? "QRIS"
-      : "Transfer Bank";
+        ? "QRIS"
+        : "Transfer Bank";
 
   return `*${settings.business_name}*
 ${settings.address ? settings.address + "\n" : ""}${settings.phone ? settings.phone + "\n" : ""}${line}

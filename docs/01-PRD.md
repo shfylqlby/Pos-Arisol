@@ -3,6 +3,7 @@
 ## 1. Masalah
 
 Penjual risol skala lapak biasanya mencatat di buku atau tidak mencatat sama sekali. Akibatnya:
+
 - Tidak tahu laba bersih harian, hanya tahu uang di laci.
 - Produksi sering kelebihan (risol sisa basi) atau kurang (kehabisan saat ramai).
 - Pesanan (pre-order untuk acara/arisan) dan risol yang dititip ke warung tercatat di chat WhatsApp dan gampang terlewat.
@@ -17,12 +18,14 @@ Penjual risol skala lapak biasanya mencatat di buku atau tidak mencatat sama sek
 ## 3. Tujuan dan non-tujuan
 
 **Tujuan MVP**
+
 - Transaksi kasir selesai dalam **≤ 3 ketukan** untuk kasus umum (pilih menu, bayar tunai pas/uang pas, selesai).
 - Penjual tahu **omzet, laba, sisa stok** hari ini dalam satu layar.
 - Pre-order dan titip jual tercatat dan punya status jelas.
 - Seluruh alur kasir jalan **tanpa internet**.
 
 **Bukan tujuan MVP**
+
 - Multi-pengguna, multi-cabang, role dan hak akses.
 - Payment gateway/QRIS dinamis, integrasi e-wallet.
 - Resep/BOM dan stok bahan baku.
@@ -102,14 +105,14 @@ User story: sebagai penjual, saya ingin menambah item ke keranjang dengan satu k
 
 ## 6. Risiko dan asumsi yang perlu diuji
 
-| Asumsi / risiko | Dampak jika salah | Cara uji |
-|---|---|---|
-| Penjual mau input produksi dan sisa harian | Stok tidak akurat, F2 tidak berguna | Pilot 1 minggu, ukur berapa hari terisi |
-| Modal per pcs diketahui penjual | Laba salah | Sediakan kalkulator bantu "modal per batch ÷ jumlah jadi" |
-| Titip jual cocok dengan alur lapak 1 orang | Fitur jarang dipakai | Tanya apakah ≥ 2 mitra aktif; jika tidak, tunda polishing |
-| Sinyal buruk bikin sync gagal terus | Data antar perangkat beda | Antrean outbox dengan retry + indikator jelas |
-| iOS Safari membatasi PWA/IndexedDB | Data hilang jika tidak dipakai lama | Banner anjuran "Tambah ke Layar Utama", tombol backup |
-| Beda perangkat edit data yang sama | Konflik | Aturan konflik di 03-ARCHITECTURE bagian Sync |
+| Asumsi / risiko                            | Dampak jika salah                   | Cara uji                                                  |
+| ------------------------------------------ | ----------------------------------- | --------------------------------------------------------- |
+| Penjual mau input produksi dan sisa harian | Stok tidak akurat, F2 tidak berguna | Pilot 1 minggu, ukur berapa hari terisi                   |
+| Modal per pcs diketahui penjual            | Laba salah                          | Sediakan kalkulator bantu "modal per batch ÷ jumlah jadi" |
+| Titip jual cocok dengan alur lapak 1 orang | Fitur jarang dipakai                | Tanya apakah ≥ 2 mitra aktif; jika tidak, tunda polishing |
+| Sinyal buruk bikin sync gagal terus        | Data antar perangkat beda           | Antrean outbox dengan retry + indikator jelas             |
+| iOS Safari membatasi PWA/IndexedDB         | Data hilang jika tidak dipakai lama | Banner anjuran "Tambah ke Layar Utama", tombol backup     |
+| Beda perangkat edit data yang sama         | Konflik                             | Aturan konflik di 03-ARCHITECTURE bagian Sync             |
 
 ## 7. Pertanyaan terbuka (butuh jawaban pemilik produk)
 

@@ -1,4 +1,6 @@
-export function toCsv(rows: Record<string, string | number | null | undefined>[]): string {
+export function toCsv(
+  rows: Record<string, string | number | null | undefined>[]
+): string {
   if (rows.length === 0) return "";
   const headers = Object.keys(rows[0]);
   const escape = (val: string | number | null | undefined): string => {

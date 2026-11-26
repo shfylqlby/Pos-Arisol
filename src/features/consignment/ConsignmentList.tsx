@@ -3,7 +3,12 @@
 import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Plus, Store, HandCoins } from "lucide-react";
-import { listPartners, savePartner, getPartnerStockBalance, listSettlements } from "@/data/repositories/partners";
+import {
+  listPartners,
+  savePartner,
+  getPartnerStockBalance,
+  listSettlements,
+} from "@/data/repositories/partners";
 
 import type { Partner } from "@/data/schemas";
 import { formatRupiah } from "@/domain/money";
@@ -29,7 +34,7 @@ export function ConsignmentList() {
       </div>
 
       {partners === undefined ? (
-        <div className="h-32 animate-pulse rounded-card bg-border/40" />
+        <div className="bg-border/40 h-32 animate-pulse rounded-card" />
       ) : partners.length === 0 ? (
         <EmptyState
           icon={<Store size={40} />}
@@ -49,15 +54,17 @@ export function ConsignmentList() {
         <PartnerForm onDone={() => setCreateOpen(false)} />
       </Modal>
 
-      {selected && (
-        <PartnerDetail partner={selected} onClose={() => setSelected(null)} />
-      )}
+      {selected && <PartnerDetail partner={selected} onClose={() => setSelected(null)} />}
     </div>
   );
 }
 
 function PartnerRow({ partner, onClick }: { partner: Partner; onClick: () => void }) {
-  const balance = useLiveQuery(() => getPartnerStockBalance(partner.id), [partner.id], {} as Record<string, number>);
+  const balance = useLiveQuery(
+    () => getPartnerStockBalance(partner.id),
+    [partner.id],
+    {} as Record<string, number>
+  );
   const unpaid = useLiveQuery(
     async () => {
       const list = await listSettlements(partner.id);
@@ -119,10 +126,18 @@ function PartnerForm({ onDone }: { onDone: () => void }) {
   return (
     <div className="flex flex-col gap-3">
       <Field label="Nama mitra">
-        <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Warung Bu Tini" />
+        <TextInput
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Warung Bu Tini"
+        />
       </Field>
       <Field label="Kontak">
-        <TextInput value={contact} onChange={(e) => setContact(e.target.value)} placeholder="08…" />
+        <TextInput
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          placeholder="08…"
+        />
       </Field>
       <Button fullWidth disabled={saving} onClick={submit}>
         {saving ? "Menyimpan…" : "Simpan mitra"}

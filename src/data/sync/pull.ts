@@ -2,7 +2,7 @@ import { db } from "../db";
 import { getSupabaseClient } from "./supabase";
 import type { SyncState } from "../schemas";
 
-const SYNCABLE_TABLES = [
+export const SYNCABLE_TABLES = [
   "settings",
   "products",
   "sales",
@@ -41,6 +41,8 @@ export async function pullAll(): Promise<{ pulled: number }> {
   if (!sessionData.session?.user) return { pulled: 0 };
 
   let pulled = 0;
+  const pendingRows = await db.outbox.where("status").equals("pending").toArray();
+  const pendingKeys = new Set(pendingRows.map((o) => `${o.table}:${o.row_id}`));
 
   for (const table of SYNCABLE_TABLES) {
     let cursor = await getCursor(table);
@@ -66,8 +68,17 @@ export async function pullAll(): Promise<{ pulled: number }> {
 
       const dexieTable = db.table(table);
       for (const row of data) {
+        const rowId = String((row as Record<string, unknown>).id ?? "");
+        if (pendingKeys.has(`${table}:${rowId}`)) {
+          cursor = (row as Record<string, unknown>).server_updated_at as string;
+          continue;
+        }
         // Strip server-only column before writing locally
         const { server_updated_at, ...localRow } = row as Record<string, unknown>;
+        if (table === "settings") {
+          const existing = await db.settings.get(rowId);
+          if (existing) localRow.pin_hash = existing.pin_hash;
+        }
         await dexieTable.put(localRow);
         cursor = server_updated_at as string;
         pulled++;

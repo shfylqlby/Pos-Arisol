@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { CheckCircle2, Share2, Printer } from "lucide-react";
+import { CheckCircle2, Share2, Printer, Image as ImageIcon } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getSettings } from "@/data/repositories/settings";
 import type { Sale, SaleItem } from "@/data/schemas";
@@ -9,7 +9,13 @@ import { formatRupiah } from "@/domain/money";
 import { formatDateTime } from "@/lib/date";
 import { formatWhatsAppReceipt } from "@/domain/receipt";
 import { Button } from "@/ui/Button";
-import { shareText, printHtml, receiptHtml } from "@/lib/share";
+import {
+  shareText,
+  printHtml,
+  receiptHtml,
+  shareReceiptPng,
+  type ReceiptPrintOptions,
+} from "@/lib/share";
 
 interface SuccessScreenProps {
   sale: Sale;
@@ -33,9 +39,9 @@ export function SuccessScreen({ sale, items, onNewTransaction }: SuccessScreenPr
     await shareText(text, "Struk");
   };
 
-  const handlePrint = () => {
-    if (!settings) return;
-    const html = receiptHtml({
+  const buildReceiptOptions = (): ReceiptPrintOptions | null => {
+    if (!settings) return null;
+    return {
       businessName: settings.business_name,
       address: settings.address,
       phone: settings.phone,
@@ -56,31 +62,45 @@ export function SuccessScreen({ sale, items, onNewTransaction }: SuccessScreenPr
         sale.payment_method === "cash"
           ? "Tunai"
           : sale.payment_method === "qris"
-          ? "QRIS"
-          : "Transfer",
+            ? "QRIS"
+            : "Transfer",
       footer: settings.receipt_footer,
-    });
-    printHtml(html);
+    };
+  };
+
+  const handlePrint = () => {
+    const opts = buildReceiptOptions();
+    if (!opts) return;
+    printHtml(receiptHtml(opts));
+  };
+
+  const handleImage = async () => {
+    const opts = buildReceiptOptions();
+    if (!opts) return;
+    await shareReceiptPng(opts, `struk-${sale.receipt_no}.png`);
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-bg px-6">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg px-6">
       <div className="w-full max-w-sm text-center">
-        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 text-success">
+        <div className="bg-success/10 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full text-success">
           <CheckCircle2 size={40} />
         </div>
         <h1 className="text-lg font-bold">Transaksi tersimpan</h1>
         <div className="mt-4 text-xs font-medium text-ink-muted">Kembalian</div>
-        <div className="tabular-nums text-4xl font-extrabold text-success">
+        <div className="text-4xl font-extrabold tabular-nums text-success">
           {formatRupiah(sale.change_amount)}
         </div>
         <div className="mt-2 text-sm text-ink-muted">Struk {sale.receipt_no}</div>
 
-        <div className="mt-6 flex gap-2">
-          <Button variant="secondary" className="flex-1" onClick={handleShare}>
-            <Share2 size={18} /> Bagikan
+        <div className="mt-6 grid grid-cols-3 gap-2">
+          <Button variant="secondary" onClick={handleShare}>
+            <Share2 size={18} /> Teks
           </Button>
-          <Button variant="secondary" className="flex-1" onClick={handlePrint}>
+          <Button variant="secondary" onClick={handleImage}>
+            <ImageIcon size={18} /> Gambar
+          </Button>
+          <Button variant="secondary" onClick={handlePrint}>
             <Printer size={18} /> Cetak
           </Button>
         </div>

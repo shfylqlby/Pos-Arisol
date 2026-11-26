@@ -25,7 +25,10 @@ export async function getPartner(id: string): Promise<Partner | undefined> {
 }
 
 export async function savePartner(
-  data: Omit<Partner, "id" | "created_at" | "updated_at" | "deleted_at" | "device_id" | "owner_id"> & {
+  data: Omit<
+    Partner,
+    "id" | "created_at" | "updated_at" | "deleted_at" | "device_id" | "owner_id"
+  > & {
     id?: string;
   }
 ): Promise<Partner> {
@@ -56,9 +59,7 @@ export async function savePartner(
   return partner;
 }
 
-export async function getPartnerPrices(
-  partnerId: string
-): Promise<PartnerPrice[]> {
+export async function getPartnerPrices(partnerId: string): Promise<PartnerPrice[]> {
   return db.partner_prices.where("partner_id").equals(partnerId).toArray();
 }
 
@@ -317,19 +318,15 @@ export async function markSettlementPaid(
     updated_at: now,
   };
 
-  await db.transaction(
-    "rw",
-    [db.consignment_settlements, db.outbox],
-    async () => {
-      await db.consignment_settlements.put(updated);
-      await recordOutbox(
-        "consignment_settlements",
-        updated.id,
-        "upsert",
-        updated as unknown as Record<string, unknown>
-      );
-    }
-  );
+  await db.transaction("rw", [db.consignment_settlements, db.outbox], async () => {
+    await db.consignment_settlements.put(updated);
+    await recordOutbox(
+      "consignment_settlements",
+      updated.id,
+      "upsert",
+      updated as unknown as Record<string, unknown>
+    );
+  });
 
   return updated;
 }
@@ -339,10 +336,7 @@ export async function getConsignmentRevenue(
   endDate: string,
   timezone = "Asia/Jakarta"
 ): Promise<{ total: number; count: number }> {
-  const paid = await db.consignment_settlements
-    .where("status")
-    .equals("paid")
-    .toArray();
+  const paid = await db.consignment_settlements.where("status").equals("paid").toArray();
 
   const inRange = paid.filter((s) => {
     if (!s.paid_at) return false;

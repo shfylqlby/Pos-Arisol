@@ -28,7 +28,7 @@ export function MoneyKeypad({ initial = 0, onSubmit, onCancel }: MoneyKeypadProp
     <div className="flex flex-col gap-3">
       <div className="rounded-card border border-border bg-surface p-4 text-right">
         <div className="text-xs text-ink-muted">Jumlah</div>
-        <div className="tabular-nums text-3xl font-bold text-ink">
+        <div className="text-3xl font-bold tabular-nums text-ink">
           {display.toLocaleString("id-ID")}
         </div>
       </div>

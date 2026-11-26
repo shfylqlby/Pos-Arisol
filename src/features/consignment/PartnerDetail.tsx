@@ -60,7 +60,11 @@ function DropTab({ partnerId }: { partnerId: string }) {
   const [qtys, setQtys] = useState<Record<string, number>>({});
   const [saving, setSaving] = useState(false);
 
-  const balance = useLiveQuery(() => getPartnerStockBalance(partnerId), [partnerId], {} as Record<string, number>);
+  const balance = useLiveQuery(
+    () => getPartnerStockBalance(partnerId),
+    [partnerId],
+    {} as Record<string, number>
+  );
 
   const submit = async () => {
     const items = Object.entries(qtys)
@@ -90,7 +94,10 @@ function DropTab({ partnerId }: { partnerId: string }) {
         {Object.values(balance).reduce((a, b) => a + b, 0)} pcs.
       </p>
       {products.map((p) => (
-        <div key={p.id} className="flex items-center justify-between rounded-btn border border-border px-3 py-2">
+        <div
+          key={p.id}
+          className="flex items-center justify-between rounded-btn border border-border px-3 py-2"
+        >
           <div>
             <div className="text-sm font-semibold">{p.name}</div>
             <div className="text-xs text-ink-muted">Sisa: {balance[p.id] ?? 0} pcs</div>
@@ -112,13 +119,13 @@ function DropTab({ partnerId }: { partnerId: string }) {
 function SettlementTab({ partnerId }: { partnerId: string }) {
   const products = useLiveQuery(() => listProducts(false), [], []);
   const { show } = useToast();
-  const balance = useLiveQuery(() => getPartnerStockBalance(partnerId), [partnerId], {} as Record<string, number>);
-  const prices = useLiveQuery(() => getPartnerPrices(partnerId), [partnerId], []);
-  const settlements = useLiveQuery(
-    () => listSettlements(partnerId),
+  const balance = useLiveQuery(
+    () => getPartnerStockBalance(partnerId),
     [partnerId],
-    []
+    {} as Record<string, number>
   );
+  const prices = useLiveQuery(() => getPartnerPrices(partnerId), [partnerId], []);
+  const settlements = useLiveQuery(() => listSettlements(partnerId), [partnerId], []);
 
   const [open, setOpen] = useState(false);
 
@@ -133,9 +140,14 @@ function SettlementTab({ partnerId }: { partnerId: string }) {
         ) : (
           <ul className="flex flex-col gap-2">
             {settlements.map((s) => (
-              <li key={s.id} className="flex items-center justify-between rounded-btn border border-border px-3 py-2">
+              <li
+                key={s.id}
+                className="flex items-center justify-between rounded-btn border border-border px-3 py-2"
+              >
                 <div>
-                  <div className="text-sm font-semibold tabular-nums">{formatRupiah(s.total_due)}</div>
+                  <div className="text-sm font-semibold tabular-nums">
+                    {formatRupiah(s.total_due)}
+                  </div>
                   <div className="text-xs text-ink-muted">
                     {s.period_start} → {s.period_end}
                   </div>
@@ -186,7 +198,9 @@ function SettlementForm({
   onDone: () => void;
 }) {
   const { show } = useToast();
-  const [rows, setRows] = useState<Record<string, { sold: number; returned: number; price: number }>>({});
+  const [rows, setRows] = useState<
+    Record<string, { sold: number; returned: number; price: number }>
+  >({});
   const [saving, setSaving] = useState(false);
 
   const priceFor = (productId: string) => {
@@ -199,10 +213,7 @@ function SettlementForm({
   const rowFor = (productId: string) =>
     rows[productId] ?? { sold: 0, returned: 0, price: priceFor(productId) };
 
-  const total = Object.entries(rows).reduce(
-    (acc, [, r]) => acc + r.sold * r.price,
-    0
-  );
+  const total = Object.entries(rows).reduce((acc, [, r]) => acc + r.sold * r.price, 0);
 
   const submit = async () => {
     const items = Object.entries(rows)
@@ -295,7 +306,7 @@ function SettlementForm({
         })
       )}
 
-      <div className="rounded-card bg-primary-soft/50 p-3 text-base font-bold">
+      <div className="bg-primary-soft/50 rounded-card p-3 text-base font-bold">
         <div className="flex justify-between">
           <span>Tagihan</span>
           <span className="tabular-nums">{formatRupiah(total)}</span>
@@ -322,7 +333,10 @@ function PriceTab({ partnerId }: { partnerId: string }) {
       {products.map((p) => {
         const current = prices.find((x) => x.product_id === p.id)?.price ?? "";
         return (
-          <div key={p.id} className="flex items-center justify-between gap-2 rounded-btn border border-border px-3 py-2">
+          <div
+            key={p.id}
+            className="flex items-center justify-between gap-2 rounded-btn border border-border px-3 py-2"
+          >
             <div>
               <div className="text-sm font-semibold">{p.name}</div>
               <div className="text-xs text-ink-muted">Jual {formatRupiah(p.price)}</div>

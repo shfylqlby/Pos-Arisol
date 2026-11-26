@@ -5,26 +5,35 @@ import { getNowISO } from "@/lib/date";
 
 export const DEFAULT_SETTINGS_ID = "default_settings";
 
+export function defaultSettings(): Settings {
+  return {
+    id: DEFAULT_SETTINGS_ID,
+    business_name: "Risol Bu Sari",
+    address: "",
+    phone: "",
+    receipt_footer: "Terima kasih atas kunjungannya!",
+    timezone: "Asia/Jakarta",
+    low_stock_threshold_default: 10,
+    device_label: "A",
+    pin_hash: null,
+    auto_return_seconds: 8,
+    qris_image: null,
+    updated_at: getNowISO(),
+  };
+}
+
+// Read-only: safe to call inside useLiveQuery (no write in the live query transaction).
 export async function getSettings(): Promise<Settings> {
-  let settings = await db.settings.get(DEFAULT_SETTINGS_ID);
-  if (!settings) {
-    const now = getNowISO();
-    settings = {
-      id: DEFAULT_SETTINGS_ID,
-      business_name: "Risol Bu Sari",
-      address: "",
-      phone: "",
-      receipt_footer: "Terima kasih atas kunjungannya!",
-      timezone: "Asia/Jakarta",
-      low_stock_threshold_default: 10,
-      device_label: "A",
-      pin_hash: null,
-      auto_return_seconds: 8,
-      qris_image: null,
-      updated_at: now,
-    };
-    await db.settings.put(settings);
-  }
+  const settings = await db.settings.get(DEFAULT_SETTINGS_ID);
+  return settings ?? defaultSettings();
+}
+
+// Creates the default row when missing. Call from app init, never inside useLiveQuery.
+export async function ensureSettings(): Promise<Settings> {
+  const existing = await db.settings.get(DEFAULT_SETTINGS_ID);
+  if (existing) return existing;
+  const settings = defaultSettings();
+  await db.settings.put(settings);
   return settings;
 }
 

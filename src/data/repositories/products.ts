@@ -21,7 +21,10 @@ export async function getProduct(id: string): Promise<Product | undefined> {
 }
 
 export async function saveProduct(
-  data: Omit<Product, "id" | "created_at" | "updated_at" | "deleted_at" | "device_id" | "owner_id"> & {
+  data: Omit<
+    Product,
+    "id" | "created_at" | "updated_at" | "deleted_at" | "device_id" | "owner_id"
+  > & {
     id?: string;
   }
 ): Promise<Product> {

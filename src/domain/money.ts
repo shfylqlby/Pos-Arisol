@@ -34,10 +34,10 @@ export function calculateChange(
 
 export function getQuickCashOptions(totalDue: number): number[] {
   if (totalDue <= 0) return [5000, 10000, 20000, 50000];
-  
+
   const standardDenominations = [5000, 10000, 20000, 50000, 100000];
   const higherDenominations = standardDenominations.filter((d) => d > totalDue);
-  
+
   // Dynamic rounded up options (e.g. next 10k or next 50k)
   const next5k = Math.ceil(totalDue / 5000) * 5000;
   const next10k = Math.ceil(totalDue / 10000) * 10000;

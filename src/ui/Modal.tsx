@@ -29,7 +29,11 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-black/40"
+        onClick={onClose}
+        aria-hidden="true"
+      />
       <div
         role="dialog"
         aria-modal="true"
@@ -40,7 +44,7 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
           <h2 className="text-lg font-bold">{title}</h2>
           <button
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-primary-soft/50"
+            className="hover:bg-primary-soft/50 flex h-10 w-10 items-center justify-center rounded-full"
             aria-label="Tutup"
           >
             <X size={20} />

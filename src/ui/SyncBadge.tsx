@@ -33,7 +33,8 @@ export function SyncBadge() {
       case "offline":
         return {
           icon: <CloudOff size={12} />,
-          text: status.pending > 0 ? `Offline · ${status.pending} belum terkirim` : "Offline",
+          text:
+            status.pending > 0 ? `Offline · ${status.pending} belum terkirim` : "Offline",
           cls: "text-warning",
         };
       case "error":

@@ -13,18 +13,17 @@ export async function getReportData(
   endDate: string
 ): Promise<ReportData> {
   const sales = (
-    await db.sales.where("business_date").between(startDate, endDate, true, true).toArray()
+    await db.sales
+      .where("business_date")
+      .between(startDate, endDate, true, true)
+      .toArray()
   ).sort((a, b) => b.created_at.localeCompare(a.created_at));
 
   const saleIds = new Set(sales.map((s) => s.id));
-  const saleItems = (await db.sale_items.toArray()).filter((i) =>
-    saleIds.has(i.sale_id)
-  );
+  const saleItems = (await db.sale_items.toArray()).filter((i) => saleIds.has(i.sale_id));
 
   const voidSaleIds = new Set(
-    (await db.sale_voids.toArray())
-      .map((v) => v.sale_id)
-      .filter((id) => saleIds.has(id))
+    (await db.sale_voids.toArray()).map((v) => v.sale_id).filter((id) => saleIds.has(id))
   );
 
   const waste = (

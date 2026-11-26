@@ -35,11 +35,7 @@ export function ConfirmDialog({
           <Button variant="secondary" fullWidth onClick={onCancel}>
             {cancelLabel}
           </Button>
-          <Button
-            variant={danger ? "danger" : "primary"}
-            fullWidth
-            onClick={onConfirm}
-          >
+          <Button variant={danger ? "danger" : "primary"} fullWidth onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </div>

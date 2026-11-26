@@ -47,7 +47,7 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
   const { className = "", ...rest } = props;
   return (
     <textarea
-      className={`min-h-[80px] w-full rounded-btn border border-border bg-surface p-3 text-base text-ink placeholder:text-ink-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${className}`}
+      className={`placeholder:text-ink-muted/60 min-h-[80px] w-full rounded-btn border border-border bg-surface p-3 text-base text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${className}`}
       {...rest}
     />
   );
@@ -55,7 +55,5 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
 
 export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
   const { className = "", ...rest } = props;
-  return (
-    <select className={`${inputBase} ${className}`} {...rest} />
-  );
+  return <select className={`${inputBase} ${className}`} {...rest} />;
 }

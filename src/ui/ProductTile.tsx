@@ -19,7 +19,7 @@ export function ProductTile({ product, stock, qtyInCart, onClick }: ProductTileP
   return (
     <button
       onClick={onClick}
-      className="relative flex min-h-[96px] flex-col justify-between rounded-card border border-border bg-surface p-3 text-left transition-transform duration-100 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className="relative flex min-h-[96px] flex-col justify-between rounded-card border border-border bg-surface p-3 text-left transition-transform duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.97]"
     >
       {qtyInCart > 0 && (
         <span className="absolute right-2 top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-on-primary">
@@ -32,7 +32,7 @@ export function ProductTile({ product, stock, qtyInCart, onClick }: ProductTileP
         </div>
       </div>
       <div className="mt-2">
-        <div className="tabular-nums text-base font-bold text-primary">
+        <div className="text-base font-bold tabular-nums text-primary">
           {formatRupiah(product.price)}
         </div>
         {showStock && (
@@ -42,19 +42,15 @@ export function ProductTile({ product, stock, qtyInCart, onClick }: ProductTileP
               status.status === "out_of_stock"
                 ? "text-danger"
                 : status.status === "low_stock"
-                ? "text-warning"
-                : "text-ink-muted",
+                  ? "text-warning"
+                  : "text-ink-muted",
             ].join(" ")}
           >
-            {status.status === "out_of_stock"
-              ? "Habis"
-              : `sisa ${stock}`}
+            {status.status === "out_of_stock" ? "Habis" : `sisa ${stock}`}
             {status.status === "low_stock" && " (menipis)"}
           </div>
         )}
-        {!showStock && (
-          <div className="mt-0.5 text-xs text-ink-muted">Paket</div>
-        )}
+        {!showStock && <div className="mt-0.5 text-xs text-ink-muted">Paket</div>}
       </div>
     </button>
   );

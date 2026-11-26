@@ -43,7 +43,7 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
           <h2 className="text-lg font-bold">{title}</h2>
           <button
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-primary-soft/50"
+            className="hover:bg-primary-soft/50 flex h-10 w-10 items-center justify-center rounded-full"
             aria-label="Tutup"
           >
             <X size={20} />
